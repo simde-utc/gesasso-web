@@ -1,17 +1,86 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Gesassos |{% block title %}{% endblock %}</title>
+  {% include 'partials/head.html' %}
 </head>
 <body>
 
-    {% include 'partials/header.html' %}
+<header>
+  <nav class="top-nav amber darken-1">
+    <div class="container">
+      <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="material-icons">menu</i></a>
+      <div class="nav-wrapper"><a class="page-title">Gesassos | {{ app_name|capfirst }}</a></div>
+      <div class="nav-wrapper"><a class="page-title">{{ username|capfirst }}</a></div>
+    </div>
+  </nav>
+  <ul id="nav-mobile" class="side-nav fixed">
+    <li class="logo">
+      <a id="logo-container" href="{% url 'index' %}" class="brand-logo">
+        <img id="front-page-logo" src="{% static "images/logo.png" %}" alt="SiMDE"/>
+        <!-- <object id="front-page-logo" type="image/svg+xml" data="res/materialize.svg">TODO: LOGO</object> -->
+      </a>
+    </li>
 
-    {% block content %}
-    {% endblock %}
+    <li class="bold{% if app_name == "home" %} active{% endif %}">
+      <a href="{% url 'index' %}" class="waves-effect waves-teal{% if app_name == "home" %} active{% endif %}">
+        Accueil
+      </a>
+    </li>
+    <li class="no-padding">
+      <ul class="collapsible collapsible-accordion">
+        <li class="bold{% if app_name == "gesassos" %} active{% endif %}">
+          <a href="gesasso.html" class="waves-effect waves-teal{% if app_name == "gesassos" %} active{% endif %}">
+            Gestion asso
+          </a>
+        </li>
+        <li class="bold{% if app_name == "gesmail" %} active{% endif %}">
+          <a href="{% url 'gesmail:index' %}" class="waves-effect waves-teal{% if app_name == "gesmail" %} active{% endif %}">
+            Gesmail
+          </a> 
+        </li>
+        <li class="bold"><a href="ginger.html" class="waves-effect waves-teal">Ginger</a></li>
+        <li class="bold{% if app_name == "api" %} active{% endif %}">
+          <a class="collapsible-header waves-effect waves-teal{% if app_name == "api" %} active{% endif %}">APIs</a>
+          <div class="collapsible-body">
+            <ul>
+              <li class="active"><a href="#">Ginger</a></li>
+              <li><a href="#">Portail</a></li>
+            </ul>
+          </div>
+        </li>
+        <li class="bold"><a class="waves-effect waves-teal">Portail</a></li>
+        <li class="bold"><a href="{% url 'authentication:login' %}" class="waves-effect waves-teal">Se connecter</a></li>
+        <li class="bold"><a href="{% url 'authentication:logout' %}" class="waves-effect waves-teal">Se déconnecter</a></li>
+      </ul>
+    </li>
+  </ul>
+</header>
 
-    {% include 'partials/footer.html' %}
+<main>
+  <div class="container">
+    <div class="row">
+      <div class="col s12">
+          <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+              {% block content %}
+              {% endblock %}
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% include 'partials/footer.html' %}
+
+</div>
+
+
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="{% static "gesassos/js/materialize.js" %}"></script>
+<script src="{% static "gesassos/js/init.js" %}"></script>
 
 </body>
 </html>

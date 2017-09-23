@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cas',
     'gesassos',
     'gesmail',
 ]
@@ -46,8 +47,17 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cas.middleware.CASMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    # 'django.contrib.auth.backends.RemoteUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'cas.backends.CASBackend',
+    # 'authentication.backends.GingerCASBackend',
 ]
 
 ROOT_URLCONF = 'gesassos.urls'
@@ -126,5 +136,18 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     ("images", os.path.join(BASE_DIR, "images")),
-    ("css", os.path.join(BASE_DIR, "assets/css")),
 ]
+
+LOGIN_URL = '/accounts/login'
+
+CAS_SERVER_URL = "https://cas.utc.fr/cas/"
+CAS_AUTO_CREATE_USERS = True
+CAS_LOGOUT_COMPLETELY = True
+CAS_PROVIDE_URL_TO_LOGOUT = True
+CAS_RESPONSE_CALLBACKS = (
+    'gesassos/test.py',
+)
+
+# Ginger config
+GINGER_KEY = 'f4f93ae5c15a841251ad54ed90c1b639'
+GINGER_SERVER_URL = 'https://assos.utc.fr/ginger/v1/'

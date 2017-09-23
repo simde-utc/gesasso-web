@@ -58,6 +58,37 @@ ul.side-nav.fixed ul.collapsible-accordion a.collapsible-header {
     padding: 0 30px;
 }
 
+
+/* Logo */
+.logo {
+	margin-top: 44px;
+	margin-bottom: 44px;
+}
+
+#logo-container {
+	margin: auto;
+	height: 70px;
+	line-height: 70px;
+}
+
+#front-page-logo {
+	display: inline-block;
+	height: 100%;
+	pointer-events: none;
+}
+
+ul.side-nav.fixed li.logo {
+    text-align: center;
+}
+
+ul.side-nav.fixed li.logo:hover, ul.side-nav.fixed li.logo #logo-container:hover {
+    background-color: transparent;
+}
+
+#nav-mobile > li:last-child {
+    margin-bottom: 88px;
+}
+
 /* Main */
 @media only screen and (min-width: 993px) {
 	.container {

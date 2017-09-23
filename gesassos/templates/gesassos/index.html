@@ -1,9 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Home
-{% endblock %}
+{% block page_name %}Patapouf{% endblock %}
 
 {% block content %}
-<h1>Plop</h1>
+
+<br><br>
+<h1 class="header center amber-text  text-darken-1">Gesassos web</h1>
+<div class="row center">
+<h5 class="header col s12 light">Bienvenue !<br/>Connectez-vous pour accéder à la gestion des assos</h5>
+</div>
+<div class="row center">
+<a href="{% url 'authentication:login' %}" id="download-button" class="btn-large waves-effect waves-light amber darken-1">Se connecter avec le CAS</a>
+</div>
+<br><br>
+<!-- <h1>Plop</h1>
+{% if all %}
+    <p>Tout ça ?</p>
+{% else %}
+    <p>Ok</p>
+{% endif %} -->
+
 {% endblock %}

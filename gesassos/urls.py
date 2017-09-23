@@ -17,12 +17,17 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf import settings
 from django.views.static import serve
+import cas.views
 
 from . import views
 
+app_name = 'gesassos'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^gesmail/', include('gesmail.urls')),
+    url(r'^authentication/', include('authentication.urls')),
+    # url(r'^accounts/login/$', cas.views.login, name='login'),
+    # url(r'^accounts/logout/$', cas.views.logout, name='logout'),
     url(r'^media/(?P<path>.*)$', serve, {
         'document_root': settings.MEDIA_ROOT,
     }),

@@ -2,8 +2,10 @@ from cas.backends import CASBackend
 from cas.backends import _verify
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from urllib.parse import urlencode, urljoin
-from urllib.request import urlopen
+# from urllib.parse import urlencode, urljoin
+# from urllib.request import urlopen
+from urllib import urlopen, urlencode
+from urlparse import urljoin
 import json
 import datetime
 from authentication.models import UserType
@@ -63,7 +65,8 @@ class GingerCASBackend(UpdatedCASBackend):
         :return: The configurated user
         """
         params = {'key': settings.GINGER_KEY, }
-        url = urljoin(settings.GINGER_SERVER_URL, user.login) + \
+        # url = urljoin(settings.GINGER_SERVER_URL, user.login) + \
+        url = urljoin(settings.GINGER_SERVER_URL, str(user)) + \
             '?' + urlencode(params)
         page = urlopen(url)
         response = page.read()
@@ -76,6 +79,15 @@ class GingerCASBackend(UpdatedCASBackend):
             user.birthdate = datetime.date.min
         else:
             user.birthdate = datetime.date.today
+        # print(json_data)
+
+        try:
+            UserType.objects.get(
+                name=UserType.NON_COTISANT)
+        except Exception as e:
+            UserType.init_values()
+            raise e
+
         if json_data.get('is_cotisant'):
             user.usertype = UserType.objects.get(
                 name=UserType.COTISANT)

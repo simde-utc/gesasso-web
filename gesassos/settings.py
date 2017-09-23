@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cas',
+    'authentication',
     'gesassos',
     'gesmail',
 ]
@@ -56,8 +57,8 @@ MIDDLEWARE = [
 AUTHENTICATION_BACKENDS = [
     # 'django.contrib.auth.backends.RemoteUserBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'cas.backends.CASBackend',
-    # 'authentication.backends.GingerCASBackend',
+    # 'cas.backends.CASBackend',
+    'authentication.backends.GingerCASBackend',
 ]
 
 ROOT_URLCONF = 'gesassos.urls'
@@ -145,9 +146,9 @@ CAS_AUTO_CREATE_USERS = True
 CAS_LOGOUT_COMPLETELY = True
 CAS_PROVIDE_URL_TO_LOGOUT = True
 CAS_RESPONSE_CALLBACKS = (
-    'gesassos/test.py',
+    'gesassos.test.callbackfunction',
 )
 
 # Ginger config
-GINGER_KEY = 'f4f93ae5c15a841251ad54ed90c1b639'
+GINGER_KEY = 'e4da53f4b0c64d01c518ce91204061'
 GINGER_SERVER_URL = 'https://assos.utc.fr/ginger/v1/'

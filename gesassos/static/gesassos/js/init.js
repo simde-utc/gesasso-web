@@ -2,7 +2,7 @@
   $(function(){
 
     $('.button-collapse').sideNav();
-    $('ul:not(.collapsible) > li.active').addClass("amber darken-1");
+    $('ul:not(.collapsible) > li.active').addClass("amber");
 
     $('input.autocomplete').autocomplete({
         data: {

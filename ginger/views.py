@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+
 from django.http import HttpResponse, Http404
 from django.template import loader
 from django.contrib.auth.decorators import login_required
@@ -9,20 +10,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 # @login_required
-def index(request):
-    template = loader.get_template('gesmail/index.html')
+def contributors(request):
+    template = loader.get_template('ginger/index.html')
     
     context = {
-        'app_name': "gesmail",
+        'app_name': "ginger",
+        'view_name' : "contributors",
         'all': "all",
     }
     return HttpResponse(template.render(context, request))
 
-def detail(request, all):
+def api(request):
     context = {
-        'app_name': "gesmail",
-        'all': all == "all",
+        'app_name': "ginger",
+        'view_name' : "api_keys",
     }
-    if all == "prout":
-    	raise Http404("Mauvaise réponse !")
-    return render(request, 'gesmail/index.html', context)
+    return render(request, 'ginger/api.html', context)

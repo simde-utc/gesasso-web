@@ -24,6 +24,7 @@ from . import views
 app_name = 'gesassos'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^ginger/', include('ginger.urls')),
     url(r'^gesmail/', include('gesmail.urls')),
     url(r'^authentication/', include('authentication.urls')),
     # url(r'^accounts/login/$', cas.views.login, name='login'),

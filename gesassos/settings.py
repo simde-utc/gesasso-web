@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'authentication',
     'gesassos',
     'gesmail',
+    'ginger',
 ]
 
 MIDDLEWARE = [

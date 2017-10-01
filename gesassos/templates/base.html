@@ -7,7 +7,7 @@
 <body>
 
 <header>
-  <nav class="top-nav amber darken-1">
+  <nav class="top-nav amber">
     <div class="container">
       <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="material-icons">menu</i></a>
       <div class="nav-wrapper"><a class="page-title">Gesassos | {{ app_name|capfirst }}</a></div>
@@ -29,27 +29,26 @@
     </li>
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
-        <li class="bold{% if app_name == "gesassos" %} active{% endif %}">
-          <a href="gesasso.html" class="waves-effect waves-teal{% if app_name == "gesassos" %} active{% endif %}">
-            Gestion asso
-          </a>
-        </li>
-        <li class="bold{% if app_name == "gesmail" %} active{% endif %}">
-          <a href="{% url 'gesmail:index' %}" class="waves-effect waves-teal{% if app_name == "gesmail" %} active{% endif %}">
-            Gesmail
-          </a> 
-        </li>
-        <li class="bold"><a href="ginger.html" class="waves-effect waves-teal">Ginger</a></li>
-        <li class="bold{% if app_name == "api" %} active{% endif %}">
-          <a class="collapsible-header waves-effect waves-teal{% if app_name == "api" %} active{% endif %}">APIs</a>
+        <li class="bold{% if app_name == "ginger" %} active{% endif %}">
+          <a class="collapsible-header waves-effect waves-teal{% if app_name == "ginger" %} active{% endif %}">Ginger</a>
           <div class="collapsible-body">
             <ul>
-              <li class="active"><a href="#">Ginger</a></li>
-              <li><a href="#">Portail</a></li>
+              <li class="{% if view_name == "contributors" %} active{% endif %}"><a href="{% url 'ginger:contributors' %}">Cotisants</a></li>
+              <li class="{% if view_name == "api_keys" %} active{% endif %}"><a href="{% url 'ginger:api_keys' %}">Clés d'API</a></li>
             </ul>
           </div>
         </li>
-        <li class="bold"><a class="waves-effect waves-teal">Portail</a></li>
+        <li class="bold{% if app_name == "gesmail" %} active{% endif %}">
+          <a href="{% url 'gesmail:index' %}" class="waves-effect waves-teal{% if app_name == "gesmail" %} active{% endif %}">
+            Adresses mail
+          </a> 
+        </li>
+        <li class="bold{% if app_name == "gesassos" %} active{% endif %}">
+          <a href="gesasso.html" class="waves-effect waves-teal{% if app_name == "gesassos" %} active{% endif %}">
+            Assos
+          </a>
+        </li>
+        <!-- <li class="bold"><a class="waves-effect waves-teal">Portail</a></li> -->
         <li class="bold"><a href="{% url 'authentication:login' %}" class="waves-effect waves-teal">Se connecter</a></li>
         <li class="bold"><a href="{% url 'authentication:logout' %}" class="waves-effect waves-teal">Se déconnecter</a></li>
       </ul>

@@ -5,14 +5,10 @@ from cas.backends import CASBackend
 from cas.backends import _verify
 from django.contrib.auth import get_user_model
 from django.conf import settings
-# from urllib.parse import urlencode, urljoin
-# from urllib.request import urlopen
-from urllib import urlopen, urlencode
-from urlparse import urljoin
-import json
 import datetime
 from authentication.models import UserType
 from django.contrib.auth.models import Group
+from api import portal, gingerV1
 
 
 class UpdatedCASBackend(CASBackend):
@@ -70,18 +66,12 @@ class GingerCASBackend(UpdatedCASBackend):
         """
 
         # GINGER
-        params = {'key': settings.GINGER_KEY, }
-        # url = urljoin(settings.GINGER_SERVER_URL, user.login) + \
-        url = urljoin(settings.GINGER_SERVER_URL, str(user)) + \
-            '?' + urlencode(params)
-        page = urlopen(url)
-        response = page.read()
-        json_data = json.loads(response.decode())
+        ginger_user = gingerV1.get_user(user)
 
-        user.first_name = json_data.get('prenom').capitalize()
-        user.last_name = json_data.get('nom').capitalize()
-        user.email = json_data.get('mail')
-        if json_data.get('is_adulte'):
+        user.first_name = ginger_user['surname'].capitalize()
+        user.last_name = ginger_user['name'].capitalize()
+        user.email = ginger_user['email']
+        if ginger_user['is_adult']:
             user.birthdate = datetime.date.min
         else:
             user.birthdate = datetime.date.today
@@ -94,7 +84,7 @@ class GingerCASBackend(UpdatedCASBackend):
             UserType.init_values()
             raise e
 
-        if json_data.get('is_cotisant'):
+        if ginger_user['is_contributor']:
             user.usertype = UserType.objects.get(
                 name=UserType.COTISANT)
         else:
@@ -102,43 +92,31 @@ class GingerCASBackend(UpdatedCASBackend):
                 name=UserType.NON_COTISANT)
 
         # PORTAL RIGHTS
-        url = urljoin(settings.PORTAL_SERVER_URL, "profile/" + str(user) + "/json")
-        response = urlopen(url).read()
-        json_data = json.loads(response.decode())
-
-        semester_ids = json_data['semestres'].keys()
-        semester_ids.sort(key=int)
-        last_semester_id = semester_ids[-1]
-
-        # print(json_data['semestres'][last_semester_id])
-
-        # Check it is current semester # TODO: make the portal API do this check on its own
-        current_semester = "A17"
+        superadmin, groups, roles = portal.get_roles(user)
 
         self._test_groups()
         self._reset_user_rights(user)
 
         # Check and save SiMDE and BDE rights (portal groups and super admin)
-        if "groups" in json_data:
-            for group in json_data["groups"]:
+        if groups:
+            for group in groups:
                 if group == "simde":
                     self._set_user_simde(user)
                 if group == "bde":
                     self._set_user_bde(user)
-        if "superadmin" in json_data and json_data["superadmin"]:
+        if superadmin:
             self._set_user_superadmin(user)
 
         # TODO remove, test only
         if user.get_username() in ["michelme", "jennypau", "snastuzz", "crichard"]:
             # self._set_user_superadmin(user)
-            # self._set_user_simde(user)
+            self._set_user_simde(user)
             # self._set_user_bde(user)
-            self._set_user_geek(user, "festupic")
+            # self._set_user_geek(user, "festupic")
 
         # Check and save asso rights
-        if current_semester == json_data['semestres'][last_semester_id]["semestre"]:
-            current_semester_id = last_semester_id
-            for role in json_data['semestres'][current_semester_id]["roles"]:
+        if roles:
+            for role in roles:
                 # For all role that is president, "bureau", "resp info", save them
                 if role["role"]["name"] == u"Président":
                     self._set_user_president(user, role["asso"]["login"])
@@ -146,7 +124,6 @@ class GingerCASBackend(UpdatedCASBackend):
                     self._set_user_bureau(user, role["asso"]["login"])
                 if role["role"]["name"] == u"Resp Info":
                     self._set_user_geek(user, role["asso"]["login"])
-
 
         return user
 

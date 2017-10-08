@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.models import User
 
-# @login_required
+@login_required
 def contributors(request):
     template = loader.get_template('ginger/index.html')
     
@@ -20,6 +20,7 @@ def contributors(request):
     }
     return HttpResponse(template.render(context, request))
 
+@login_required
 def api(request):
     context = {
         'app_name': "ginger",

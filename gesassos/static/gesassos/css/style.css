@@ -95,3 +95,7 @@ ul.side-nav.fixed li.logo:hover, ul.side-nav.fixed li.logo #logo-container:hover
 	    width: 85%;
 	}
 }
+
+.right {
+	float: right;
+}

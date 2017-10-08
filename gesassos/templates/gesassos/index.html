@@ -5,13 +5,20 @@
 {% block content %}
 
 <br><br>
+
 <h1 class="header center amber-text">Gesassos web</h1>
+{% if user.is_authenticated %}
+<div class="row center">
+<h5 class="header col s12 light">Bienvenue !<br/></h5>
+</div>
+{% else %}
 <div class="row center">
 <h5 class="header col s12 light">Bienvenue !<br/>Connectez-vous pour accéder à la gestion des assos</h5>
 </div>
 <div class="row center">
 <a href="{% url 'authentication:login' %}" id="download-button" class="btn-large waves-effect waves-light amber">Se connecter avec le CAS</a>
 </div>
+{% endif %}
 <br><br>
 <!-- <h1>Plop</h1>
 {% if all %}
@@ -19,5 +26,6 @@
 {% else %}
     <p>Ok</p>
 {% endif %} -->
+{{ dump }}
 
 {% endblock %}

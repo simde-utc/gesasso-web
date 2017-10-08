@@ -10,9 +10,16 @@ def index(request):
     context = {
     	"app_name": "home",
         "location?": "TODO",
+        # "groups": [ g.name for g in request.user.groups.all()]
     }
     return render(request, 'gesassos/index.html', context)
 
-# def login(request):
-# 	# Todo : use return URL in parameter, given by a private page redirecting here
-# 	return redirect(settings.CAS_URL + 'login?service=' + request.build_absolute_uri(reverse('view_name', args=(obj.pk, ))))
+def denied(request):
+    context = {
+    	"app_name": "denied",
+    	"denied_page": request.GET.get('next',''),
+    }
+    return render(request, 'gesassos/denied.html', context)
+
+# def error404(request):
+# 	return render(request, 'gesassos/404.html', context, status=404)

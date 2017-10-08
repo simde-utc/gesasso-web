@@ -24,7 +24,7 @@ SECRET_KEY = '@afkg++5_lghk8-*0r-@p*5mrxba4l5-)j))fxyict@(s8tbcb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -140,16 +140,19 @@ STATICFILES_DIRS = [
     ("images", os.path.join(BASE_DIR, "images")),
 ]
 
-LOGIN_URL = '/accounts/login'
+LOGIN_URL = '/authentication/login'
 
 CAS_SERVER_URL = "https://cas.utc.fr/cas/"
 CAS_AUTO_CREATE_USERS = True
-CAS_LOGOUT_COMPLETELY = True
+CAS_LOGOUT_COMPLETELY = not DEBUG
 CAS_PROVIDE_URL_TO_LOGOUT = True
 CAS_RESPONSE_CALLBACKS = (
     'gesassos.test.callbackfunction',
 )
 
 # Ginger config
-GINGER_KEY = 'e4da53f4b0c64d01c518ce91204061'
+GINGER_KEY = ''
 GINGER_SERVER_URL = 'https://assos.utc.fr/ginger/v1/'
+
+# Portal config
+PORTAL_SERVER_URL = 'https://assos.utc.fr/'

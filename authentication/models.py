@@ -1,5 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 
@@ -85,6 +84,7 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
 
     @property
     def is_staff(self):

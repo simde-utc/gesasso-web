@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load gingertime %}
+{% load groups %}
 
 {% block page_name %}Clés d'API Ginger{% endblock %}
 
@@ -24,22 +26,104 @@
 </form>
 </div>
 <ul class="collection">
-  <li class="collection-item avatar">
-    <i class="material-icons circle grey lighten-1">face</i>
-    <span class="title">Emploi d'UT'emps</span>
-    <p class="grey-text text-lighten-1">e4da53f4b0c64d01e4da53f4b0c64d01<br/>
-    On sait pas trop pour quoi faire, le gars sait même pas générer une clé SSH...
-    </p>
-    <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
-  </li>
-  <li class="collection-item avatar">
-    <i class="material-icons circle grey lighten-1">face</i>
-    <span class="title">Gesassos-web</span>
-    <p class="grey-text text-lighten-1">vdsf15gvb5df4bb4v4fd8v4t8ert1b8f<br/>
-    #recursion
-    </p>
-    <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
-  </li>
+  {% for key in keys %}
+    <li class="collection-item expandable avatar">
+      <i class="material-icons circle grey lighten-1">face</i>
+      <span class="title">{{ key.login }}</span>
+      <p class="grey-text text-lighten-1">{{ key.key }}<br/>
+      {{ key.description }}
+      </p>
+      <a href="#!" class="secondary-content"><i class="material-icons amber-text">more_vert</i></a>
+      <div>
+        <p>Id: {{ key.id }}</p>
+        <p>Création {{ key.createdAt|ginger_date_to_human }}, mis à jour {{ key.updatedAt|ginger_date_to_human }}</p>
+        Permissions:
+        {% for permission in key.permissions %}
+          <div class="chip">
+            {{ permission }}
+          </div>
+        {% endfor %}
+        </p>
+      </div>
+    </li>
+  {% endfor %}
 </ul>
 
+{% if request.user|has_group_in:"simde" %} 
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large amber btn-new">
+    <i class="large material-icons">add</i>
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block new-form %}
+{% if request.user|has_group_in:"simde" %} 
+<h5 class="header col s12 light">Ajouter une clé Ginger<br/></h5>
+<form class="col s12">
+  <div class="row">
+    <div class="input-field col s12">
+      <select>
+        <!-- <option value="" disabled selected>Asso</option> -->
+        <option value="1">SiMDE</option>
+        <option value="2">BDE</option>
+        <option value="3">Etuville</option>
+      </select>
+      <label>Sélectionner une asso</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s12">
+      <input placeholder="Justification courte de l'utilisation de la clé" id="description" type="text">
+      <label for="first_name">Description</label>
+    </div>
+  </div>
+  <p>
+    <input type="checkbox" id="users_add" />
+    <label for="users_add">users_add</label>
+  </p>
+  <p>
+    <input type="checkbox" id="users_delete" />
+    <label for="users_delete">users_delete</label>
+  </p>
+  <p>
+    <input type="checkbox" id="users_edit" />
+    <label for="users_edit">users_edit</label>
+  </p>
+  <p>
+    <input type="checkbox" id="users_badge" />
+    <label for="users_badge">users_badge</label>
+  </p>
+  <p>
+    <input type="checkbox" id="contributions_add" />
+    <label for="contributions_add">contributions_add</label>
+  </p>
+  <p>
+    <input type="checkbox" id="contributions_delete" />
+    <label for="contributions_delete">contributions_delete</label>
+  </p>
+  <p>
+    <input type="checkbox" id="contributions_read" />
+    <label for="contributions_read">contributions_read</label>
+  </p>
+  <p>
+    <input type="checkbox" id="stats_read" />
+    <label for="stats_read">stats_read</label>
+  </p>
+  <p>
+    <input type="checkbox" id="settings_read" />
+    <label for="settings_read">settings_read</label>
+  </p>
+  <p>
+    <input type="checkbox" id="keys_all" />
+    <label for="keys_all">keys_all</label>
+  </p>
+
+  <button class="btn waves-effect waves-light amber" type="submit" name="action">Ajouter
+    <i class="material-icons right">send</i>
+  </button>
+</form>
+{% endif %}
 {% endblock %}

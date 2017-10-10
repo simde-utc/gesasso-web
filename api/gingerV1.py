@@ -5,8 +5,8 @@ from urlparse import urljoin
 import json
 
 def get_user(user):
-    params = {'key': settings.GINGER_KEY, }
-    url = urljoin(settings.GINGER_SERVER_URL, user.get_username()) + \
+    params = {'key': settings.GINGER_KEY_V1, }
+    url = urljoin(settings.GINGER_SERVER_URL_V1, user.get_username()) + \
         '?' + urlencode(params)
     page = urlopen(url)
     response = page.read()

@@ -151,8 +151,11 @@ CAS_RESPONSE_CALLBACKS = (
 )
 
 # Ginger config
-GINGER_KEY = ''
-GINGER_SERVER_URL = 'https://assos.utc.fr/ginger/v1/'
+GINGER_KEY_V1 = 'e4da53f4b0c64d01c518ce91204061'
+GINGER_SERVER_URL_V1 = 'https://assos.utc.fr/ginger/v1/'
+
+GINGER_KEY_V2 = '1234'
+GINGER_SERVER_URL_V2 = 'http://localhost:3000/v2/'
 
 # Portal config
 PORTAL_SERVER_URL = 'https://assos.utc.fr/'

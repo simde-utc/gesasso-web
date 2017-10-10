@@ -17,6 +17,27 @@
         minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
     });
 
+    $('li.collection-item.expandable a').click(function () {
+        $( this ).parent().toggleClass("expanded");
+        console.log($( this ).children("div"));
+        $( this ).parent().children("div").slideToggle();
+    });
+
+    $(".btn-new").click(function() {
+        $(".new-form").fadeIn();
+        return false;
+    });
+
+
+    $(".new-form").css("display", "flex").hide().css("opacity", 1);
+    $(".new-form").click(function() {
+        $(".new-form").fadeOut();
+        return false;
+    });
+    $(".new-form-container").on("click", function(evt) {
+        evt.stopPropagation();
+    });
+
     $('.passwd-confirm').click(function() {
         confirmText = "announcement";
         if ($( this ).children('i').text() == confirmText) {

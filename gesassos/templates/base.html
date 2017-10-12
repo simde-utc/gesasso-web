@@ -47,7 +47,7 @@
               {% if request.user|has_group_in:"bde,simde" %} 
               <li class="{% if view_name == "contributors" %} active{% endif %}"><a href="{% url 'ginger:contributors' %}">Cotisants</a></li>
               {% endif %}
-              <li class="{% if view_name == "api_keys" %} active{% endif %}"><a href="{% url 'ginger:api_keys' %}">Clés d'API</a></li>
+              <li class="{% if view_name == "api" %} active{% endif %}"><a href="{% url 'ginger:api' %}">Clés d'API</a></li>
             </ul>
           </div>
         </li>

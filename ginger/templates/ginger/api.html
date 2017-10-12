@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<h2 class="header amber-text">Ginger</h1>
+<h2 class="header amber-text">Ginger</h2>
 <div class="row">
   <h5 class="header col s12 light">Gestion des clés d'API</h5>
 </div>
@@ -43,7 +43,8 @@
             {{ permission }}
           </div>
         {% endfor %}
-        </p>
+<a href="{% url 'ginger:delete_key' key.id %}" class="btn waves-effect waves-light amber right confirm"><span>Supprimer</span> <i class="material-icons right">delete</i></a>
+        
       </div>
     </li>
   {% endfor %}
@@ -62,66 +63,35 @@
 {% block new-form %}
 {% if request.user|has_group_in:"simde" %} 
 <h5 class="header col s12 light">Ajouter une clé Ginger<br/></h5>
-<form class="col s12">
+<form class="col s12" action="{% url 'ginger:api' %}" method="post">
+  {% csrf_token %}
   <div class="row">
-    <div class="input-field col s12">
-      <select>
-        <!-- <option value="" disabled selected>Asso</option> -->
-        <option value="1">SiMDE</option>
-        <option value="2">BDE</option>
-        <option value="3">Etuville</option>
-      </select>
+    <!-- <div class="input-field col s12"> -->
+    <div class="col s12">
       <label>Sélectionner une asso</label>
+      <select style="display: block;" name="login">
+        <!-- <option value="" disabled selected>Asso</option> -->
+        {% for asso in assos %}
+          <option value="{{ asso.login }}">{{ asso.name }}</option>
+        {% endfor %}
+      </select>
+      <!-- <label>Sélectionner une asso</label> -->
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
-      <input placeholder="Justification courte de l'utilisation de la clé" id="description" type="text">
+      <input placeholder="Justification courte de l'utilisation de la clé" name="description" type="text">
       <label for="first_name">Description</label>
     </div>
   </div>
-  <p>
-    <input type="checkbox" id="users_add" />
-    <label for="users_add">users_add</label>
-  </p>
-  <p>
-    <input type="checkbox" id="users_delete" />
-    <label for="users_delete">users_delete</label>
-  </p>
-  <p>
-    <input type="checkbox" id="users_edit" />
-    <label for="users_edit">users_edit</label>
-  </p>
-  <p>
-    <input type="checkbox" id="users_badge" />
-    <label for="users_badge">users_badge</label>
-  </p>
-  <p>
-    <input type="checkbox" id="contributions_add" />
-    <label for="contributions_add">contributions_add</label>
-  </p>
-  <p>
-    <input type="checkbox" id="contributions_delete" />
-    <label for="contributions_delete">contributions_delete</label>
-  </p>
-  <p>
-    <input type="checkbox" id="contributions_read" />
-    <label for="contributions_read">contributions_read</label>
-  </p>
-  <p>
-    <input type="checkbox" id="stats_read" />
-    <label for="stats_read">stats_read</label>
-  </p>
-  <p>
-    <input type="checkbox" id="settings_read" />
-    <label for="settings_read">settings_read</label>
-  </p>
-  <p>
-    <input type="checkbox" id="keys_all" />
-    <label for="keys_all">keys_all</label>
-  </p>
+  {% for right in ginger_rights %}
+    <p>
+      <input type="checkbox" name="{{ right }}" id="{{ right }}" value="True"/>
+      <label for="{{ right }}">{{ right }}</label>
+    </p>
+  {% endfor %}
 
-  <button class="btn waves-effect waves-light amber" type="submit" name="action">Ajouter
+  <button class="btn waves-effect waves-light amber right" type="submit">Ajouter
     <i class="material-icons right">send</i>
   </button>
 </form>

@@ -17,10 +17,19 @@
         minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
     });
 
-    $('li.collection-item.expandable a').click(function () {
+    $('li.collection-item.expandable > a').click(function (evt) {
         $( this ).parent().toggleClass("expanded");
-        console.log($( this ).children("div"));
         $( this ).parent().children("div").slideToggle();
+        evt.stopPropagation();
+        return false;
+    });
+
+    $('li.collection-item.expandable').click(function (evt) {
+        evt.stopPropagation();
+    });
+    $('main').click(function () {
+        $(".expanded").children("div").slideUp();
+        $(".expanded").toggleClass("expanded");
     });
 
     $(".btn-new").click(function() {
@@ -38,13 +47,14 @@
         evt.stopPropagation();
     });
 
-    $('.passwd-confirm').click(function() {
+    $('.confirm').click(function() {
         confirmText = "announcement";
         if ($( this ).children('i').text() == confirmText) {
             return true;
         } else {
             $( this ).children('span').text("Confirmer");
             $( this ).children('i').text(confirmText);
+            $( this ).removeClass("amber").addClass("red");
             return false;
         }
     })

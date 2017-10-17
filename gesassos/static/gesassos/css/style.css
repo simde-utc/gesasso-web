@@ -118,6 +118,10 @@ li.collection-item.expanded {
 	box-shadow: 0px 5px 10px #e0e0e0;
 }
 
+li.collection-item.expanded + li {
+	border-top: 1px solid #e0e0e0;
+}
+
 ul.collection {
 	overflow: visible;
 }
@@ -164,4 +168,57 @@ li.collection-item.expandable > div {
 		border-radius: 0.3em;
 		overflow: hidden;
 	}
+}
+
+
+/* TODO: make this for mobile */
+.messages {
+	position: absolute;
+	float: right;
+	padding: 1em;
+	right: 0;
+	top: 64px;
+	z-index: 10;
+	text-align: right;
+}
+
+.messages div {
+	background: rgb(97, 97, 97);
+	border-radius: 0.5em;
+	margin-bottom: 1em;
+	padding: 1em;
+	max-width: 20em;
+	position: relative;
+	right: -25em;
+	color: white;
+	box-shadow: 0px 5px 10px #8d8d8d;
+	transition: all 0.3s ease-in-out;
+}
+
+body {
+	overflow-x: hidden;
+}
+
+.messages .visible {
+	right: 0em;
+}
+
+.messages .error {
+	background: #b71c1c;
+}
+
+.messages .debug {
+	background: #2196f3;
+}
+
+.messages .info {
+	/* use default color */
+}
+
+.messages .success {
+	background: #8bc34a;
+}
+
+.messages .warning {
+	background: #ff9800;
 }

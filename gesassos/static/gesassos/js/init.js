@@ -59,5 +59,26 @@
         }
     })
 
+    messageAnimationInterval = 200; // ms
+    messageWaitInterval = 5000; // ms
+    function toggleMessages() {
+        $( ".messages" ).children().each(function(i) {
+            setTimeout(()=>{
+                $(this).toggleClass("visible");
+            }, i*messageAnimationInterval)
+        });
+    }
+    function hideMessages() {
+        $( ".messages" ).children().each(function(i) {
+            setTimeout(()=>{
+                $(this).removeClass("visible");
+            }, i*messageAnimationInterval)
+        });
+    }
+    toggleMessages()
+    setTimeout(hideMessages, messageWaitInterval)
+
+    $("#toggleMessages").click(toggleMessages)
+
   }); // end of document ready
 })(jQuery); // end of jQuery name space

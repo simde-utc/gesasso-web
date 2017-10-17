@@ -56,7 +56,4 @@ def addKey(login,
 def deleteKey(key):
 	h = _makeHeaders()
 	r = requests.delete(_urlJoin("keys", key), headers = h)
-	print(r.status_code)
-	print(r.text)
-	# TODO: handle errors !
-	return r.status_code
+	return True if r.status_code == 200 else r.json()

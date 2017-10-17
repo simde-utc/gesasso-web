@@ -37,12 +37,16 @@
       <div>
         <p>Id: {{ key.id }}</p>
         <p>Création {{ key.createdAt|ginger_date_to_human }}, mis à jour {{ key.updatedAt|ginger_date_to_human }}</p>
-        Permissions:
+        {% if key.permissions %}
+        <p>Permissions:</p>
         {% for permission in key.permissions %}
           <div class="chip">
             {{ permission }}
           </div>
         {% endfor %}
+        {% else %}
+        <p>Pas de permission particulière : accès aux informations des étudiants et des cotisations en lecture uniquement.</p>
+        {% endif %}
 <a href="{% url 'ginger:delete_key' key.id %}" class="btn waves-effect waves-light amber right confirm"><span>Supprimer</span> <i class="material-icons right">delete</i></a>
         
       </div>

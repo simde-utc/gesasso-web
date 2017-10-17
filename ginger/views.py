@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.urls import reverse
 from django.template import loader
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from api import ginger
@@ -24,8 +25,9 @@ def contributors(request):
 @login_required
 def api(request):
     if request.method == 'POST':
-        # TODO: check data
-        print(request.POST.items())
+        # TODO: check data with Form class
+        # TODO: properly check the response
+        # print(request.POST.items())
         response = ginger.addKey(request.POST.get("login", ""),
             request.POST.get("description", ""),
             request.POST.get("users_add", False) == "True",
@@ -38,12 +40,16 @@ def api(request):
             request.POST.get("stats", False) == "True",
             request.POST.get("settings_read", False) == "True",
             request.POST.get("keys_all", False) == "True")
-        print(response)
+        # print(response)
+        messages.success(request, 'Clé d\'API correctement créée pour %s: %s'%(request.POST.get("login", ""), response["key"]))
+        return HttpResponseRedirect(reverse('ginger:api'))
 
+    keys = ginger.getKeys()
+    keys.sort()
     context = {
         'app_name': "ginger",
         'view_name' : "api",
-        'keys': ginger.getKeys(),
+        'keys': keys,
         'ginger_rights': [
             "users_add",
             "users_delete",
@@ -76,8 +82,15 @@ def api(request):
 
 @login_required
 def delete_key(request, key):
+    # TODO: properly check the response
     response = ginger.deleteKey(key)
-    return HttpResponseRedirect(reverse('ginger:api', args=()))
+    if response is True:
+        messages.success(request, 'Clé d\'API correctement supprimée')
+    else:
+        print(response)
+        messages.error(request, 'Suppression refusée par Ginger : %s (%s)'%(response["message"], response["name"]))
+
+    return HttpResponseRedirect(reverse('ginger:api'))
 
 
 # @login_required

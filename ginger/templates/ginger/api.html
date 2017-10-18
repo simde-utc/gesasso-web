@@ -47,7 +47,7 @@
         {% else %}
         <p>Pas de permission particulière : accès aux informations des étudiants et des cotisations en lecture uniquement.</p>
         {% endif %}
-<a href="{% url 'ginger:delete_key' key.id %}" class="btn waves-effect waves-light amber right confirm"><span>Supprimer</span> <i class="material-icons right">delete</i></a>
+        <a href="{% url 'ginger:delete_key' key.id %}" class="btn waves-effect waves-light amber right confirm"><span>Supprimer</span> <i class="material-icons right">delete</i></a>
         
       </div>
     </li>
@@ -64,40 +64,35 @@
 
 {% endblock %}
 
-{% block new-form %}
+
+{% block form-title %}Ajouter une clé Ginger{% endblock %}
+
+{% block form %}
 {% if request.user|has_group_in:"simde" %} 
-<h5 class="header col s12 light">Ajouter une clé Ginger<br/></h5>
+
 <form class="col s12" action="{% url 'ginger:api' %}" method="post">
   {% csrf_token %}
-  <div class="row">
-    <!-- <div class="input-field col s12"> -->
-    <div class="col s12">
-      <label>Sélectionner une asso</label>
-      <select style="display: block;" name="login">
-        <!-- <option value="" disabled selected>Asso</option> -->
-        {% for asso in assos %}
-          <option value="{{ asso.login }}">{{ asso.name }}</option>
-        {% endfor %}
-      </select>
-      <!-- <label>Sélectionner une asso</label> -->
-    </div>
-  </div>
-  <div class="row">
-    <div class="input-field col s12">
-      <input placeholder="Justification courte de l'utilisation de la clé" name="description" type="text">
-      <label for="first_name">Description</label>
-    </div>
-  </div>
-  {% for right in ginger_rights %}
-    <p>
-      <input type="checkbox" name="{{ right }}" id="{{ right }}" value="True"/>
-      <label for="{{ right }}">{{ right }}</label>
-    </p>
-  {% endfor %}
+  {% autoescape off %}
+    {{ form.as_materialize }}
+  {% endautoescape %}
 
   <button class="btn waves-effect waves-light amber right" type="submit">Ajouter
     <i class="material-icons right">send</i>
   </button>
 </form>
+
+<div class="row">
+  <!-- <div class="input-field col s12"> -->
+  <div class="col s12">
+    <label>Sélectionner une asso</label>
+    <select style="display: block;" name="login">
+      <!-- <option value="" disabled selected>Asso</option> -->
+      {% for asso in assos %}
+        <option value="{{ asso.login }}">{{ asso.name }}</option>
+      {% endfor %}
+    </select>
+    <!-- <label>Sélectionner une asso</label> -->
+  </div>
+</div>
 {% endif %}
 {% endblock %}

@@ -20,32 +20,7 @@ def getKeys():
 	# TODO: handle errors !
 	return r.json()
 
-def addKey(login,
-	description,
-	users_add,
-	users_delete,
-	users_edit,
-	users_badge,
-	contributions_add,
-	contributions_delete,
-	contributions_read,
-	stats,
-	settings_read,
-	keys_all):
-	d = {
-		"login": login,
-		"description": description,
-		"users_add": users_add,
-		"users_delete": users_delete,
-		"users_edit": users_edit,
-		"users_badge": users_badge,
-		"contributions_add": contributions_add,
-		"contributions_delete": contributions_delete,
-		"contributions_read": contributions_read,
-		"stats": stats,
-		"settings_read": settings_read,
-		"keys_all": keys_all,
-	}
+def addKey(d):
 	print(d)
 	p = {}
 	h = _makeHeaders()

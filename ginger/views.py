@@ -2,14 +2,16 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.urls import reverse
 from django.template import loader
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+
 from api import ginger
+
+from .forms import GingerKeyForm
 
 @login_required
 def contributors(request):
@@ -24,44 +26,36 @@ def contributors(request):
 
 @login_required
 def api(request):
+    showForm = False
+
     if request.method == 'POST':
-        # TODO: check data with Form class
-        # TODO: properly check the response
-        # print(request.POST.items())
-        response = ginger.addKey(request.POST.get("login", ""),
-            request.POST.get("description", ""),
-            request.POST.get("users_add", False) == "True",
-            request.POST.get("users_delete", False) == "True",
-            request.POST.get("users_edit", False) == "True",
-            request.POST.get("users_badge", False) == "True",
-            request.POST.get("contributions_add", False) == "True",
-            request.POST.get("contributions_delete", False) == "True",
-            request.POST.get("contributions_read", False) == "True",
-            request.POST.get("stats", False) == "True",
-            request.POST.get("settings_read", False) == "True",
-            request.POST.get("keys_all", False) == "True")
-        # print(response)
-        messages.success(request, 'Clé d\'API correctement créée pour %s: %s'%(request.POST.get("login", ""), response["key"]))
-        return HttpResponseRedirect(reverse('ginger:api'))
+        form = GingerKeyForm(request.POST)
+
+        if form.is_valid():
+            response = ginger.addKey(form.cleaned_data)
+
+            # TODO gérer erreurs
+            # print(response)
+            messages.success(request, 'Clé d\'API correctement créée pour %s: %s'%(request.POST.get("login", ""), response["key"]))
+
+            return HttpResponseRedirect(reverse('ginger:api'))
+        else:
+            showForm = True
+
+    else:
+        form = GingerKeyForm()
 
     keys = ginger.getKeys()
     keys.sort()
+
+    # TODO: delete ginger_rights
+    # TODO: put clean name instead of app_name
     context = {
         'app_name': "ginger",
         'view_name' : "api",
         'keys': keys,
-        'ginger_rights': [
-            "users_add",
-            "users_delete",
-            "users_edit",
-            "users_badge",
-            "contributions_add",
-            "contributions_delete",
-            "contributions_read",
-            "stats_read",
-            "settings_read",
-            "keys_all"
-        ],
+        'form': form,
+        'show_form': showForm,
         'assos': [
             {
                 'login': "simde",
@@ -77,7 +71,8 @@ def api(request):
             }
         ]
     }
-    context["ginger_rights"].sort()
+
+    # If no form is given or their is an error in the form
     return render(request, 'ginger/api.html', context)
 
 @login_required

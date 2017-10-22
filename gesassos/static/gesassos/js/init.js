@@ -2,28 +2,29 @@
   $(function(){
 
     $('.button-collapse').sideNav();
+
+    // Style TODO: move this to a clean place
     $('ul:not(.collapsible) > li.active').addClass("amber");
 
+    autocompleteValues = JSON.parse($("#autocomplete-values").text());
     $('input.autocomplete').autocomplete({
-        data: {
-            "Apple": null,
-            "Microsoft": null,
-            "Google": 'https://placehold.it/250x250'
-        },
+        data: autocompleteValues,
         limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
         onAutocomplete: function(val) {
             // Callback function when value is autcompleted.
+            goToUrl = window.location.origin + window.location.pathname + "?s=" + val
+            window.location.href = goToUrl;
         },
         minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
     });
 
+    // Expandable click events
     $('li.collection-item.expandable > a').click(function (evt) {
         $( this ).parent().toggleClass("expanded");
         $( this ).parent().children("div").slideToggle();
         evt.stopPropagation();
         return false;
     });
-
     $('li.collection-item.expandable').click(function (evt) {
         evt.stopPropagation();
     });
@@ -32,13 +33,15 @@
         $(".expanded").toggleClass("expanded");
     });
 
-    $(".btn-new").click(function() {
-        $(".new-form").fadeIn();
-        return false;
-    });
 
+    // Hidden form
+    $(".new-form:not(.visible)").css("display", "flex").hide().css("opacity", 1);
 
-    $(".new-form").css("display", "flex").hide().css("opacity", 1);
+    // Visible form
+    $(".new-form.visible").css("display", "flex").css("opacity", 1);
+    $(".new-form.visible").fadeIn();
+
+    // Form click events
     $(".new-form").click(function() {
         $(".new-form").fadeOut();
         return false;
@@ -46,7 +49,10 @@
     $(".new-form-container").on("click", function(evt) {
         evt.stopPropagation();
     });
-
+    $(".btn-new").click(function() {
+        $(".new-form").fadeIn();
+        return false;
+    });
     $('.confirm').click(function() {
         confirmText = "announcement";
         if ($( this ).children('i').text() == confirmText) {
@@ -59,6 +65,7 @@
         }
     })
 
+    // Messages animations and actions
     messageAnimationInterval = 200; // ms
     messageWaitInterval = 5000; // ms
     function toggleMessages() {
@@ -77,7 +84,6 @@
     }
     toggleMessages()
     setTimeout(hideMessages, messageWaitInterval)
-
     $("#toggleMessages").click(toggleMessages)
 
   }); // end of document ready

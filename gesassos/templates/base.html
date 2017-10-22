@@ -86,13 +86,14 @@
   </div>
 </main>
 
-<div class="new-form">
+<div class="new-form{% if show_form %} visible{% endif %}">
   <div class="container">
     <div class="row">
       <div class="col s6 onlycol">
         <div class="new-form-container">
           <div class="row">
-            {% block new-form %}
+            <h5 class="header col s12 light">{% block form-title %}{% endblock %}<br/></h5>
+            {% block form %}
             {% endblock %}
           </div>
         </div>

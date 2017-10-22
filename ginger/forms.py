@@ -3,22 +3,37 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 class GingerKeyForm(forms.Form):
-    # login = forms.ChoiceField(help_text="Choisir une asso.")
-    login = forms.CharField(help_text="Choisir une asso.")
+    # Possible organizations, tuple of pairs (login, human_readable_name)
+    organizations = ()
+
+    login = forms.ChoiceField(label='Sélectionner une asso')
     description = forms.CharField(help_text="Justification courte de l'utilisation de la clé.", widget=forms.TextInput(attrs={'placeholder': "Justification courte de l\'utilisation de la cle"}))
-    users_add = forms.BooleanField(help_text="TODO.", label="users_add", initial=False, required=False)
-    users_delete = forms.BooleanField(help_text="TODO.", label="users_delete", initial=False, required=False)
-    users_edit = forms.BooleanField(help_text="TODO.", label="users_edit", initial=False, required=False)
-    users_badge = forms.BooleanField(help_text="TODO.", label="users_badge", initial=False, required=False)
-    contributions_add = forms.BooleanField(help_text="TODO.", label="contributions_add", initial=False, required=False)
-    contributions_delete = forms.BooleanField(help_text="TODO.", label="contributions_delete", initial=False, required=False)
-    contributions_read = forms.BooleanField(help_text="TODO.", label="contributions_read", initial=False, required=False)
-    stats_read = forms.BooleanField(help_text="TODO.", label="stats_read", initial=False, required=False)
-    settings_read = forms.BooleanField(help_text="TODO.", label="settings_read", initial=False, required=False)
-    keys_all = forms.BooleanField(help_text="TODO.", label="keys_al", initial=False, required=False)
+    users_add = forms.BooleanField(label="users_add", initial=False, required=False)
+    users_delete = forms.BooleanField(label="users_delete", initial=False, required=False)
+    users_edit = forms.BooleanField(label="users_edit", initial=False, required=False)
+    users_badge = forms.BooleanField(label="users_badge", initial=False, required=False)
+    contributions_add = forms.BooleanField(label="contributions_add", initial=False, required=False)
+    contributions_delete = forms.BooleanField(label="contributions_delete", initial=False, required=False)
+    contributions_read = forms.BooleanField(label="contributions_read", initial=False, required=False)
+    stats_read = forms.BooleanField(label="stats_read", initial=False, required=False)
+    settings_read = forms.BooleanField(label="settings_read", initial=False, required=False)
+    keys_all = forms.BooleanField(label="keys_all", initial=False, required=False)
+
+    def __init__(self, organizations, *args, **kwargs):
+            super(forms.Form, self).__init__(*args, **kwargs)
+            self.organizations = organizations
+            help_text = self.fields['login'].help_text
+            # print(self.organizations)
+            self.fields['login'].choices = self.organizations
 
     def clean_login(self):
         data = self.cleaned_data['login']
+
+        # Get only organizations logins
+        organizations_login = [item[0] for item in self.organizations]
+
+        if data not in organizations_login:
+            raise ValidationError("Tu dois avoir les droits sur cette asso !")
 
         return data
 
@@ -89,13 +104,20 @@ class GingerKeyForm(forms.Form):
         for boundfield in self:
             if isinstance(boundfield.field, forms.BooleanField):
                 formStr += "<p>\n"
+                formStr += unicode(boundfield.errors) + "\n"
+                formStr += unicode(boundfield) + "\n"
+                formStr += "        %s\n" % boundfield.label_tag(label_suffix="")
+                formStr += "</p>\n"
+            elif isinstance(boundfield.field, forms.ChoiceField):
+                formStr += "<div class='row'>\n    <div class='col s12'>\n"
+                formStr += "        %s\n" % boundfield.label_tag(label_suffix="")
+                formStr += unicode(boundfield) + "\n"
+                formStr += unicode(boundfield.errors) + "\n"
+                formStr += "    </div>\n</div>\n"
             else:
                 formStr += "<div class='row'>\n    <div class='input-field col s12'>\n"
-            formStr += str(boundfield.errors) + "\n"
-            formStr += str(boundfield) + "\n"
-            formStr += "        %s\n" % boundfield.label_tag(label_suffix="")
-            if isinstance(boundfield.field, forms.BooleanField):
-                formStr += "</p>\n"
-            else:
+                formStr += unicode(boundfield.errors) + "\n"
+                formStr += unicode(boundfield) + "\n"
+                formStr += "        %s\n" % boundfield.label_tag(label_suffix="")
                 formStr += "    </div>\n</div>\n"
         return formStr

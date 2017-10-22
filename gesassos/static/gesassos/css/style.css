@@ -96,8 +96,8 @@ ul.side-nav.fixed li.logo:hover, ul.side-nav.fixed li.logo #logo-container:hover
 	}
 }
 
-.right {
-	float: right;
+.align-right {
+	text-align: right;
 }
 
 
@@ -221,4 +221,13 @@ body {
 
 .messages .warning {
 	background: #ff9800;
+}
+
+.errorlist li {
+	color: #b71c1c;
+}
+
+/* The following revert a law of Materialize because it works bad with select fields */
+select {
+    display: block;
 }

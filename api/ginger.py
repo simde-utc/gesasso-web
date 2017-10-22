@@ -13,22 +13,27 @@ def _makeHeaders():
 	}
 
 def getKeys():
-	p = {}
+	# p = {}
 	h = _makeHeaders()
-	r = requests.get(_urlJoin("keys"), params = p, headers = h)
+	# r = requests.get(_urlJoin("keys"), params = p, headers = h)
+	r = requests.get(_urlJoin("keys"), headers = h)
 	# r.status_code
 	# TODO: handle errors !
 	return r.json()
 
 def addKey(d):
-	print(d)
-	p = {}
+	# print(d)
 	h = _makeHeaders()
-	r = requests.post(_urlJoin("keys"), params = p, json = d, headers = h)
+	r = requests.post(_urlJoin("keys"), json = d, headers = h)
 	# TODO: handle errors !
 	return r.json()
 
 def deleteKey(key):
 	h = _makeHeaders()
 	r = requests.delete(_urlJoin("keys", key), headers = h)
+	return True if r.status_code == 200 else r.json()
+
+def renewKey(key):
+	h = _makeHeaders()
+	r = requests.post(_urlJoin("keys", key), headers = h)
 	return True if r.status_code == 200 else r.json()

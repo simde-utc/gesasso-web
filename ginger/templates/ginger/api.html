@@ -11,16 +11,24 @@
   <h5 class="header col s12 light">Gestion des clés d'API</h5>
 </div>
 <div class="row">
-<form action="#">
+<form action="" method="GET">
   <div class="input-field">
     <div class="row">
       <div class="col s9">
-        <input type="text" id="autocomplete-input" class="autocomplete">
+        <script type="text/json" id="autocomplete-values">
+          {% autoescape off %}
+            {{ autocomplete }}
+          {% endautoescape %}
+        </script>
+        <input type="text" id="autocomplete-input" name="s" class="autocomplete" {% if show_unfilter %}value="{{show_unfilter}}"{% endif %}>
         <label for="autocomplete-input">Rechercher une clé par nom ou par description</label>
       </div>
-      <div class="btn waves-effect waves-light amber right">
-        <span>Rechercher</span>
-      </div>
+      <button class="btn waves-effect waves-light amber right" type="submit">Rechercher
+        <i class="material-icons right">search</i>
+      </button>
+      {% if show_unfilter %}
+      <a href="{% url 'ginger:api' %}" class="btn waves-effect waves-light amber right"><span>Enlever le filtre</span><i class="material-icons right">close</i></a>
+      {% endif %}
     </div>
   </div>
 </form>
@@ -47,8 +55,13 @@
         {% else %}
         <p>Pas de permission particulière : accès aux informations des étudiants et des cotisations en lecture uniquement.</p>
         {% endif %}
-        <a href="{% url 'ginger:delete_key' key.id %}" class="btn waves-effect waves-light amber right confirm"><span>Supprimer</span> <i class="material-icons right">delete</i></a>
-        
+      </div>
+      <div class="align-right">
+        {% if request.user|has_group_in:"simde" %}
+        <a href="#" class="btn waves-effect waves-light amber"><span>Éditer</span><i class="material-icons right">edit</i></a>
+        <a href="{% url 'ginger:delete_key' key.id %}" class="btn waves-effect waves-light amber confirm"><span>Supprimer</span><i class="material-icons right">delete</i></a>
+        {% endif %}
+        <a href="{% url 'ginger:renew_key' key.id %}" class="btn waves-effect waves-light amber"><span>Regénérer</span><i class="material-icons right">autorenew</i></a>
       </div>
     </li>
   {% endfor %}
@@ -80,19 +93,5 @@
     <i class="material-icons right">send</i>
   </button>
 </form>
-
-<div class="row">
-  <!-- <div class="input-field col s12"> -->
-  <div class="col s12">
-    <label>Sélectionner une asso</label>
-    <select style="display: block;" name="login">
-      <!-- <option value="" disabled selected>Asso</option> -->
-      {% for asso in assos %}
-        <option value="{{ asso.login }}">{{ asso.name }}</option>
-      {% endfor %}
-    </select>
-    <!-- <label>Sélectionner une asso</label> -->
-  </div>
-</div>
 {% endif %}
 {% endblock %}

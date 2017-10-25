@@ -4,7 +4,10 @@ from django.conf import settings
 import requests
 
 def _urlJoin(*argv):
-	return settings.GINGER_SERVER_URL_V2 + "/".join(argv)
+	strArgv = []
+	for arg in argv:
+		strArgv.append(str(arg))
+	return settings.GINGER_SERVER_URL_V2 + "/".join(strArgv)
 
 def _makeHeaders():
 	return {
@@ -27,6 +30,12 @@ def addKey(d):
 	r = requests.post(_urlJoin("keys"), json = d, headers = h)
 	# TODO: handle errors !
 	return r.json()
+
+def editKey(key, d):
+	h = _makeHeaders()
+	r = requests.patch(_urlJoin("keys", key), json = d, headers = h)
+	print(r)
+	return True if r.status_code == 204 else r.json()
 
 def deleteKey(key):
 	h = _makeHeaders()

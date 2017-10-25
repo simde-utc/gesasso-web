@@ -50,7 +50,7 @@
         evt.stopPropagation();
     });
     $(".btn-new").click(function() {
-        $(".new-form").fadeIn();
+        showStdForm();
         return false;
     });
     $('.confirm').click(function() {
@@ -85,6 +85,30 @@
     toggleMessages()
     setTimeout(hideMessages, messageWaitInterval)
     $("#toggleMessages").click(toggleMessages)
+
+    // Edit
+    initForm = "";
+    $(" .edit-item ").click(function (evt) {
+        showStdForm($( this ).parent().children(".hidden-form").first().html());
+        return false;
+    });
+
+    function showStdForm(editForm = false){
+        if(!editForm) {
+            if (initForm != ""){
+                $("#std-form").html(initForm);
+            }
+        } else {
+            if (initForm == ""){
+                initForm = $("#std-form").html();
+            }
+
+            $("#std-form").html( editForm );
+        }
+        Materialize.updateTextFields();
+        $("#std-form").find("select").material_select();
+        $(".new-form").fadeIn();
+    }
 
   }); // end of document ready
 })(jQuery); // end of jQuery name space

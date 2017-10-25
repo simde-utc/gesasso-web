@@ -40,11 +40,26 @@ def api(request):
         form = GingerKeyForm(tuple(assos), request.POST)
 
         if form.is_valid():
-            response = ginger.addKey(form.cleaned_data)
+            if request.POST.get("edit-id", "").isdigit():
+                # Actually editing an item
+                keyId = int(request.POST.get("edit-id", ""))
 
-            # TODO gérer erreurs
-            # print(response)
-            messages.success(request, 'Clé d\'API correctement créée pour %s: %s'%(request.POST.get("login", ""), response["key"]))
+                # TODO tester que la clé existe et que l'utilisateur a les droits
+
+                # Update key values
+                response = ginger.editKey(keyId, form.cleaned_data)
+
+                # TODO gérer erreurs
+                # print(response)
+                messages.success(request, 'Clé d\'API correctement mise à jour pour %s'%(request.POST.get("login", "")))
+            else:
+                # Creating a new key
+                response = ginger.addKey(form.cleaned_data)
+
+                if response is True:
+                    messages.success(request, 'Clé d\'API correctement créée pour %s: %s'%(request.POST.get("login", ""), response["key"]))
+                else:
+                    messages.error(request, 'Édition refusée par Ginger : %s (%s)'%(response["message"], response["name"]))
 
             return HttpResponseRedirect(reverse('ginger:api'))
         else:
@@ -61,6 +76,10 @@ def api(request):
         search = request.GET["s"]
         keys = [key for key in keys if search in key["login"]+key["key"]+key["description"]]
         showUnfilter = search
+
+    # Generate key edit form
+    for i in range(0, len(keys)):
+        keys[i]["form"] = GingerKeyForm(tuple(assos), keys[i]).as_materialize
 
     assosAutocomplete = {}
     for assoLogin, assoName in assos:
@@ -87,7 +106,6 @@ def delete_key(request, key):
     if response is True:
         messages.success(request, 'Clé d\'API correctement supprimée')
     else:
-        print(response)
         messages.error(request, 'Suppression refusée par Ginger : %s (%s)'%(response["message"], response["name"]))
 
     return HttpResponseRedirect(reverse('ginger:api'))
@@ -98,7 +116,6 @@ def renew_key(request, key):
     if response is True:
         messages.success(request, 'Clé d\'API correctement regénérée')
     else:
-        print(response)
         messages.error(request, 'Regénération refusée par Ginger : %s (%s)'%(response["message"], response["name"]))
 
     return HttpResponseRedirect(reverse('ginger:api'))

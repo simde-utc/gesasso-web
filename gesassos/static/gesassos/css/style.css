@@ -227,7 +227,11 @@ body {
 	color: #b71c1c;
 }
 
-/* The following revert a law of Materialize because it works bad with select fields */
-select {
-    display: block;
+/* Hidden so that Materialize still find it */
+.hidden-form {
+	display: inline;
+	overflow: hidden;
+	width: 0px;
+	height: 0px;
+	position: absolute;
 }

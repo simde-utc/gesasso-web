@@ -9,6 +9,7 @@ Gestion des comptes assos pour le SiMDE et les bureaux d'assos
 	* créer une base de données `CREATE DATABASE gesassos CHARACTER SET utf8;`
 * Installer mysqlclient `sudo pip install mysqlclient` (et `sudo apt-get install python-dev python3-dev` si besoin)
 * `sudo pip install django-cas-client==1.3.0`
+* Gestion des fuseaux horaires : `sudo pip install pytz tzlocal`
 * Lancer le serveur local
 ```
 cd gesassos-web

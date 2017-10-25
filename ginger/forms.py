@@ -109,7 +109,7 @@ class GingerKeyForm(forms.Form):
                 formStr += "        %s\n" % boundfield.label_tag(label_suffix="")
                 formStr += "</p>\n"
             elif isinstance(boundfield.field, forms.ChoiceField):
-                formStr += "<div class='row'>\n    <div class='col s12'>\n"
+                formStr += "<div class='row'>\n    <div class='input-field col s12'>\n"
                 formStr += "        %s\n" % boundfield.label_tag(label_suffix="")
                 formStr += unicode(boundfield) + "\n"
                 formStr += unicode(boundfield.errors) + "\n"
@@ -121,3 +121,5 @@ class GingerKeyForm(forms.Form):
                 formStr += "        %s\n" % boundfield.label_tag(label_suffix="")
                 formStr += "    </div>\n</div>\n"
         return formStr
+
+    

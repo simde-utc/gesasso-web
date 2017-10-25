@@ -15,7 +15,7 @@
   <div class="input-field">
     <div class="row">
       <div class="col s9">
-        <script type="text/json" id="autocomplete-values">
+        <script type="application/json" id="autocomplete-values">
           {% autoescape off %}
             {{ autocomplete }}
           {% endautoescape %}
@@ -44,7 +44,7 @@
       <a href="#!" class="secondary-content"><i class="material-icons amber-text">more_vert</i></a>
       <div>
         <p>Id: {{ key.id }}</p>
-        <p>Création {{ key.createdAt|ginger_date_to_human }}, mis à jour {{ key.updatedAt|ginger_date_to_human }}</p>
+        <p>Création {{ key.createdAt|ginger_date_to_human }}{% if key.updatedAt != key.createdAt %}, mis à jour {{ key.updatedAt|ginger_date_to_human }}{% endif %}</p>
         {% if key.permissions %}
         <p>Permissions:</p>
         {% for permission in key.permissions %}
@@ -58,7 +58,19 @@
       </div>
       <div class="align-right">
         {% if request.user|has_group_in:"simde" %}
-        <a href="#" class="btn waves-effect waves-light amber"><span>Éditer</span><i class="material-icons right">edit</i></a>
+        <a href="#" class="btn waves-effect waves-light amber edit-item"><span>Éditer</span><i class="material-icons right">edit</i></a>
+        <script class="hidden-form" type="text/html">
+          <input type="hidden" name="edit-id" value="{{ key.id }}">
+
+          {% csrf_token %}
+          {% autoescape off %}
+            {{ key.form }}
+          {% endautoescape %}
+
+          <button class="btn waves-effect waves-light amber right" type="submit">Mettre à jour
+            <i class="material-icons right">edit</i>
+          </button>
+        </script>
         <a href="{% url 'ginger:delete_key' key.id %}" class="btn waves-effect waves-light amber confirm"><span>Supprimer</span><i class="material-icons right">delete</i></a>
         {% endif %}
         <a href="{% url 'ginger:renew_key' key.id %}" class="btn waves-effect waves-light amber"><span>Regénérer</span><i class="material-icons right">autorenew</i></a>
@@ -78,12 +90,15 @@
 {% endblock %}
 
 
-{% block form-title %}Ajouter une clé Ginger{% endblock %}
+{% block form-title %}Clé Ginger{% endblock %}
 
 {% block form %}
 {% if request.user|has_group_in:"simde" %} 
 
-<form class="col s12" action="{% url 'ginger:api' %}" method="post">
+<form class="col s12" action="{% url 'ginger:api' %}" id="std-form" method="post">
+
+  <input type="hidden" name="edit-id" value="">
+
   {% csrf_token %}
   {% autoescape off %}
     {{ form.as_materialize }}

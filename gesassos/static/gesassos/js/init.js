@@ -6,18 +6,20 @@
     // Style TODO: move this to a clean place
     $('ul:not(.collapsible) > li.active').addClass("amber");
 
-    autocompleteValues = JSON.parse($("#autocomplete-values").text());
-    $('input.autocomplete').autocomplete({
-        data: autocompleteValues,
-        limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
-        onAutocomplete: function(val) {
-            // Callback function when value is autcompleted.
-            goToUrl = window.location.origin + window.location.pathname + "?s=" + val
-            window.location.href = goToUrl;
-        },
-        minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
-    });
+    if ($("#autocomplete-values").text() != ""){
+        autocompleteValues = JSON.parse($("#autocomplete-values").text());
 
+        $('input.autocomplete').autocomplete({
+            data: autocompleteValues,
+            limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
+            onAutocomplete: function(val) {
+                // Callback function when value is autcompleted.
+                goToUrl = window.location.origin + window.location.pathname + "?s=" + val
+                window.location.href = goToUrl;
+            },
+            minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
+        });
+    }
     // Expandable click events
     $('li.collection-item.expandable > a').click(function (evt) {
         $( this ).parent().toggleClass("expanded");

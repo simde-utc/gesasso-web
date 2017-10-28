@@ -2,6 +2,7 @@
 
 from django.conf import settings
 import requests
+from requestCommons import RequestResult
 
 def _urlJoin(*argv):
 	strArgv = []
@@ -15,34 +16,42 @@ def _makeHeaders():
 		'Content-type': "application/json"
 	}
 
-def getKeys():
-	# p = {}
+def _makeRequest(method, url, httpSuccessCode, jsonData = {}):
 	h = _makeHeaders()
-	# r = requests.get(_urlJoin("keys"), params = p, headers = h)
-	r = requests.get(_urlJoin("keys"), headers = h)
-	# r.status_code
-	# TODO: handle errors !
-	return r.json()
+	result = RequestResult(False)
+	try:
+		r = method(url, headers = h, json = jsonData)
+		if r.status_code == httpSuccessCode:
+			content = None
+			try:
+				content = r.json()
+			except ValueError as e:
+				pass
+			result = RequestResult(True, content=content, raw = r)
+		else:
+			error = r.json()
+			if "message" in error:
+				errorMessage = error["message"]
+			elif "errors" in error and len(error)>0:
+				errorMessage = error["errors"][0]["message"] + "(%d erreurs en tout)"%len(error)
+			else:
+				errorMessage = "Pas de description à afficher..."
+			result = RequestResult(False, raw = r, errorName = error["name"], errorMessage = errorMessage + " (erreur Ginger)")
+	except requests.ConnectionError as e:
+		result = RequestResult(False, errorName="ConnectionError", errorMessage="Impossible de se connecter à Ginger.")
+	return result
+
+def getKeys():
+	return _makeRequest(requests.get, _urlJoin("keys"), 200)
 
 def addKey(d):
-	# print(d)
-	h = _makeHeaders()
-	r = requests.post(_urlJoin("keys"), json = d, headers = h)
-	# TODO: handle errors !
-	return r.json()
+	return _makeRequest(requests.post, _urlJoin("keys"), 201, jsonData=d)
 
 def editKey(key, d):
-	h = _makeHeaders()
-	r = requests.patch(_urlJoin("keys", key), json = d, headers = h)
-	print(r)
-	return True if r.status_code == 204 else r.json()
+	return _makeRequest(requests.patch, _urlJoin("keys", key), 204, jsonData=d)
 
 def deleteKey(key):
-	h = _makeHeaders()
-	r = requests.delete(_urlJoin("keys", key), headers = h)
-	return True if r.status_code == 200 else r.json()
+	return _makeRequest(requests.delete, _urlJoin("keys", key), 200)
 
 def renewKey(key):
-	h = _makeHeaders()
-	r = requests.post(_urlJoin("keys", key), headers = h)
-	return True if r.status_code == 200 else r.json()
+	return _makeRequest(requests.post, _urlJoin("keys", key), 200)

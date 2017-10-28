@@ -47,19 +47,23 @@ def api(request):
                 # TODO tester que la clé existe et que l'utilisateur a les droits
 
                 # Update key values
+                form.cleaned_data.pop("login", None)
+                print form.cleaned_data
                 response = ginger.editKey(keyId, form.cleaned_data)
 
-                # TODO gérer erreurs
-                # print(response)
-                messages.success(request, 'Clé d\'API correctement mise à jour pour %s'%(request.POST.get("login", "")))
+                if response.success:
+                    messages.success(request, 'Clé d\'API correctement mise à jour pour %s'%(request.POST.get("login", "")))
+                else:
+                    messages.error(request, 'Édition impossible : %s (%s)'%(response.errorMessage, response.errorName))
             else:
                 # Creating a new key
+                print form.cleaned_data
                 response = ginger.addKey(form.cleaned_data)
 
-                if response is True:
-                    messages.success(request, 'Clé d\'API correctement créée pour %s: %s'%(request.POST.get("login", ""), response["key"]))
+                if response.success:
+                    messages.success(request, 'Clé d\'API correctement créée pour %s: %s'%(request.POST.get("login", ""), response.content["key"]))
                 else:
-                    messages.error(request, 'Édition refusée par Ginger : %s (%s)'%(response["message"], response["name"]))
+                    messages.error(request, 'Ajout impossible : %s (%s)'%(response.errorMessage, response.errorName))
 
             return HttpResponseRedirect(reverse('ginger:api'))
         else:
@@ -68,18 +72,23 @@ def api(request):
     else:
         form = GingerKeyForm(tuple(assos))
 
-    keys = ginger.getKeys()
-    keys.sort()
+    keysResponse = ginger.getKeys()
+    keys = []
+    if keysResponse.success:
+        keys = keysResponse.content
+        keys.sort()
 
-    # If a search has been made
-    if request.method == "GET" and "s" in request.GET:
-        search = request.GET["s"]
-        keys = [key for key in keys if search in key["login"]+key["key"]+key["description"]]
-        showUnfilter = search
+        # If a search has been made
+        if request.method == "GET" and "s" in request.GET:
+            search = request.GET["s"]
+            keys = [key for key in keys if search in key["login"]+key["key"]+key["description"]]
+            showUnfilter = search
 
-    # Generate key edit form
-    for i in range(0, len(keys)):
-        keys[i]["form"] = GingerKeyForm(tuple(assos), keys[i]).as_materialize
+        # Generate key edit form
+        for i in range(0, len(keys)):
+            keys[i]["form"] = GingerKeyForm(tuple(assos), keys[i]).as_materialize
+    else:
+        messages.error(request, 'Lecture des clés impossible : %s (%s)'%(keysResponse.errorMessage, keysResponse.errorName))
 
     assosAutocomplete = {}
     for assoLogin, assoName in assos:
@@ -103,20 +112,20 @@ def api(request):
 @login_required
 def delete_key(request, key):
     response = ginger.deleteKey(key)
-    if response is True:
+    if response.success:
         messages.success(request, 'Clé d\'API correctement supprimée')
     else:
-        messages.error(request, 'Suppression refusée par Ginger : %s (%s)'%(response["message"], response["name"]))
+        messages.error(request, 'Suppression refusée par Ginger : %s (%s)'%(response.errorMessage, response.errorName))
 
     return HttpResponseRedirect(reverse('ginger:api'))
 
 @login_required
 def renew_key(request, key):
     response = ginger.renewKey(key)
-    if response is True:
+    if response.success:
         messages.success(request, 'Clé d\'API correctement regénérée')
     else:
-        messages.error(request, 'Regénération refusée par Ginger : %s (%s)'%(response["message"], response["name"]))
+        messages.error(request, 'Regénération refusée par Ginger : %s (%s)'%(response.errorMessage, response.errorName))
 
     return HttpResponseRedirect(reverse('ginger:api'))
 

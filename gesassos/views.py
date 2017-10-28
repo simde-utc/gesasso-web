@@ -9,7 +9,6 @@ from django.template import loader
 def index(request):
     context = {
     	"app_name": "home",
-        "location?": "TODO",
         # "groups": [ g.name for g in request.user.groups.all()]
     }
     return render(request, 'gesassos/index.html', context)

@@ -40,10 +40,6 @@ class GingerKeyForm(forms.Form):
     def clean_description(self):
         data = self.cleaned_data['description']
 
-        #TODO: Check description length
-        if len(data) > 100:
-            raise ValidationError("La description est trop longue !")
-
         if len(data) == 0:
             raise ValidationError("Il faut fournir une description !")
 

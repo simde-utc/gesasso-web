@@ -62,6 +62,8 @@ AUTHENTICATION_BACKENDS = [
     'authentication.backends.GingerCASBackend',
 ]
 
+AUTH_USER_MODEL = 'authentication.User'
+
 ROOT_URLCONF = 'gesassos.urls'
 
 TEMPLATES = [
@@ -147,11 +149,11 @@ CAS_AUTO_CREATE_USERS = True
 CAS_LOGOUT_COMPLETELY = not DEBUG
 CAS_PROVIDE_URL_TO_LOGOUT = True
 CAS_RESPONSE_CALLBACKS = (
-    'gesassos.test.callbackfunction',
+    'gesassos.test.callbackfunction', # TODO: remove this
 )
 
 # Ginger config
-GINGER_KEY_V1 = 'e4da53f4b0c64d01c518ce91204061'
+GINGER_KEY_V1 = ''
 GINGER_SERVER_URL_V1 = 'https://assos.utc.fr/ginger/v1/'
 
 GINGER_KEY_V2 = '1234'

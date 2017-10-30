@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from api import ginger
+from authentication import userUtils, models
 
 from .forms import GingerKeyForm
 
@@ -31,20 +32,23 @@ def api(request):
     showForm = False
     showUnfilter = False
 
-    # TODO
-    # assos = getUserAssos()
-    assos = [("etuville", "Étuville"), ("simde", "SiMDE"), ("bde", "BDE")]
+    # TODO: get real asso names
+    assos = list(set([(role.asso, role.asso) for role in models.UserRole.objects.all()]))
+    assos.append(('bde', 'bde'))
+    if not userUtils.has_group(request.user, "simde"):
+        userAssos = list(set([role.asso for role in request.user.roles.all()]))
+    else:
+        userAssos = [] #nofilter
+    # assos = [("etuville", "Étuville"), ("simde", "SiMDE"), ("bde", "BDE")]
 
     # TODO: test if user has right to add a key
-    if request.method == 'POST':
+    if userUtils.has_group(request.user, "simde") and request.method == 'POST':
         form = GingerKeyForm(tuple(assos), request.POST)
 
         if form.is_valid():
             if request.POST.get("edit-id", "").isdigit():
                 # Actually editing an item
                 keyId = int(request.POST.get("edit-id", ""))
-
-                # TODO tester que la clé existe et que l'utilisateur a les droits
 
                 # Update key values
                 form.cleaned_data.pop("login", None)
@@ -72,11 +76,10 @@ def api(request):
     else:
         form = GingerKeyForm(tuple(assos))
 
-    keysResponse = ginger.getKeys()
+    keysResponse = ginger.getKeys(userAssos)
     keys = []
     if keysResponse.success:
         keys = keysResponse.content
-        keys.sort()
 
         # If a search has been made
         if request.method == "GET" and "s" in request.GET:
@@ -128,7 +131,3 @@ def renew_key(request, key):
         messages.error(request, 'Regénération refusée par Ginger : %s (%s)'%(response.errorMessage, response.errorName))
 
     return HttpResponseRedirect(reverse('ginger:api'))
-
-
-# @login_required
-# def api_add(request):

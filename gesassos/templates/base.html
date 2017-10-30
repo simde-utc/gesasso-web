@@ -18,7 +18,7 @@
           <a href="#" id="toggleMessages" class="waves-effect waves-teal"><i class="material-icons">sms</i></a>
           {% endif %}
           {% if user.is_authenticated %}
-          {{ user.first_name|capfirst }} {{ user.last_name|capfirst }}
+          <a href="{% url 'authentication:info' %}" class="waves-effect waves-teal"><i class="material-icons">face</i>{{ user.first_name|capfirst }} {{ user.last_name|capfirst }}</a>
           <a href="{% url 'authentication:logout' %}" class="waves-effect waves-teal"><i class="material-icons">cancel</i></a>
           {% else %}
           <a href="{% url 'authentication:login' %}" class="waves-effect waves-teal">Se connecter</a>

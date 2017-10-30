@@ -235,3 +235,8 @@ body {
 	height: 0px;
 	position: absolute;
 }
+
+nav a i.material-icons {
+	display: inline;
+	vertical-align: bottom;
+}

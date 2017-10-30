@@ -41,8 +41,13 @@ def _makeRequest(method, url, httpSuccessCode, jsonData = {}):
 		result = RequestResult(False, errorName="ConnectionError", errorMessage="Impossible de se connecter à Ginger.")
 	return result
 
-def getKeys():
-	return _makeRequest(requests.get, _urlJoin("keys"), 200)
+def getKeys(assosLogin = []):
+	result = _makeRequest(requests.get, _urlJoin("keys"), 200)
+	if result.success:
+		if assosLogin:
+			result.content = [key for key in result.content if key["login"] in assosLogin]
+		result.content.sort()
+	return result
 
 def addKey(d):
 	return _makeRequest(requests.post, _urlJoin("keys"), 201, jsonData=d)

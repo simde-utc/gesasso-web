@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
 
@@ -46,8 +46,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     login = models.CharField(max_length=253, unique=True, blank=False)
 
     usertype = models.ForeignKey(
@@ -85,7 +84,6 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-
     @property
     def is_staff(self):
         return self.is_admin
@@ -97,3 +95,22 @@ class User(AbstractBaseUser):
 
     # check set_unusable_password() for authentication against
     # external source
+
+
+class UserRole(models.Model):
+    """A user's role in an organization"""
+    GEEK = 'G'
+    PRESIDENT = 'P'
+    BOARD = 'B'
+    ASSO_ROLES_CHOICES = (
+        (GEEK, 'geek'),
+        (PRESIDENT, 'president'),
+        (BOARD, 'board'),       # = bureau
+    )
+
+    role = models.CharField(max_length=100, blank=False, choices=ASSO_ROLES_CHOICES)
+    asso = models.CharField(max_length=100, blank=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='roles') # delete this if user is deleted --> never happens
+
+    def __unicode__(self):
+        return "%s in %s" % (self.get_role_display(), self.asso)

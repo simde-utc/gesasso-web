@@ -6,7 +6,7 @@ from cas.backends import _verify
 from django.contrib.auth import get_user_model
 from django.conf import settings
 import datetime
-from authentication.models import UserType
+from authentication.models import UserType, UserRole
 from django.contrib.auth.models import Group
 from api import portal, gingerV1
 
@@ -112,16 +112,18 @@ class GingerCASBackend(UpdatedCASBackend):
             # self._set_user_superadmin(user)
             self._set_user_simde(user)
             # self._set_user_bde(user)
-            # self._set_user_geek(user, "festupic")
+            self._set_user_geek(user, "festupic")
+            self._set_user_geek(user, "simde")
+            self._set_user_president(user, "etuville")
 
         # Check and save asso rights
         if roles:
             for role in roles:
-                # For all role that is president, "bureau", "resp info", save them
+                # For all role that is president, "board", "resp info", save them
                 if role["role"]["name"] == u"Président":
                     self._set_user_president(user, role["asso"]["login"])
                 if role["role"]["bureau"]:
-                    self._set_user_bureau(user, role["asso"]["login"])
+                    self._set_user_board(user, role["asso"]["login"])
                 if role["role"]["name"] == u"Resp Info":
                     self._set_user_geek(user, role["asso"]["login"])
 
@@ -131,22 +133,15 @@ class GingerCASBackend(UpdatedCASBackend):
 
     # rights getter/setters
     def _test_groups(self):
-        try:
-            Group.objects.get(name="simde")
-            Group.objects.get(name="bde")
-            Group.objects.get(name="president")
-            Group.objects.get(name="bureau")
-            Group.objects.get(name="geek")
-        except Exception as e:
-            Group.objects.get_or_create(name="simde")
-            Group.objects.get_or_create(name="bde")
-            Group.objects.get_or_create(name="president")
-            Group.objects.get_or_create(name="bureau")
-            Group.objects.get_or_create(name="geek")
-            # TODO: add permissions
+        Group.objects.get_or_create(name="simde")
+        Group.objects.get_or_create(name="bde")
+        Group.objects.get_or_create(name="president")
+        Group.objects.get_or_create(name="board")
+        Group.objects.get_or_create(name="geek")
 
     def _reset_user_rights(self, user):
         user.groups.clear()
+        user.roles.all().delete() # TODO check this works
         user.is_superuser = False
 
     def _set_user_simde(self, user):
@@ -166,20 +161,26 @@ class GingerCASBackend(UpdatedCASBackend):
     def _set_user_president(self, user, asso_name):
         print("%s is president in %s" % (user.get_username(), asso_name))
         print("ERROR: TODO set_president")
+        # Add role
+        user.roles.create(role=UserRole.PRESIDENT, asso=asso_name)
+        # Add to president group
         g = Group.objects.get(name="president")
         g.user_set.add(user)
-        pass
 
-    def _set_user_bureau(self, user, asso_name):
-        print("%s is bureau in %s" % (user.get_username(), asso_name))
-        print("ERROR: TODO set_bureau")
-        g = Group.objects.get(name="bureau")
+    def _set_user_board(self, user, asso_name):
+        print("%s is board in %s" % (user.get_username(), asso_name))
+        print("ERROR: TODO TEST set_board")
+        # Add role
+        user.roles.create(role=UserRole.BOARD, asso=asso_name)
+        # Add to board group
+        g = Group.objects.get(name="board")
         g.user_set.add(user)
-        pass
 
     def _set_user_geek(self, user, asso_name):
         print("%s is geek in %s" % (user.get_username(), asso_name))
-        print("ERROR: TODO set_geek")
+        print("ERROR: TODO TEST set_geek")
+        # Add role
+        user.roles.create(role=UserRole.GEEK, asso=asso_name)
+        # Add to geek group
         g = Group.objects.get(name="geek")
         g.user_set.add(user)
-        pass

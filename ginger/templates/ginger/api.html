@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load gingertime %}
+{% load groups %}
+
+{% block page_name %}Clés d'API Ginger{% endblock %}
+
+{% block content %}
+
+<h2 class="header amber-text">Ginger</h2>
+<div class="row">
+  <h5 class="header col s12 light">Gestion des clés d'API</h5>
+</div>
+<div class="row">
+<form action="" method="GET">
+  <div class="input-field">
+    <div class="row">
+      <div class="col s9">
+        <script type="application/json" id="autocomplete-values">
+          {% autoescape off %}
+            {{ autocomplete }}
+          {% endautoescape %}
+        </script>
+        <input type="text" id="autocomplete-input" name="s" class="autocomplete" {% if show_unfilter %}value="{{show_unfilter}}"{% endif %}>
+        <label for="autocomplete-input">Rechercher une clé par nom ou par description</label>
+      </div>
+      <button class="btn waves-effect waves-light amber right" type="submit">Rechercher
+        <i class="material-icons right">search</i>
+      </button>
+      {% if show_unfilter %}
+      <a href="{% url 'ginger:api' %}" class="btn waves-effect waves-light amber right"><span>Enlever le filtre</span><i class="material-icons right">close</i></a>
+      {% endif %}
+    </div>
+  </div>
+</form>
+</div>
+<ul class="collection">
+  {% for key in keys %}
+    <li class="collection-item expandable avatar">
+      <i class="material-icons circle grey lighten-1">vpn_key</i>
+      <span class="title">{{ key.login }}</span>
+      <p class="grey-text text-lighten-1">{{ key.key }}<br/>
+      {{ key.description }}
+      </p>
+      <a href="#!" class="secondary-content"><i class="material-icons amber-text">more_vert</i></a>
+      <div>
+        <p>Id: {{ key.id }}</p>
+        <p>Création {{ key.createdAt|ginger_date_to_human }}{% if key.updatedAt != key.createdAt %}, mis à jour {{ key.updatedAt|ginger_date_to_human }}{% endif %}</p>
+        {% if key.permissions %}
+        <p>Permissions:</p>
+        {% for permission in key.permissions %}
+          <div class="chip">
+            {{ permission }}
+          </div>
+        {% endfor %}
+        {% else %}
+        <p>Pas de permission particulière : accès aux informations des étudiants et des cotisations en lecture uniquement.</p>
+        {% endif %}
+      </div>
+      <div class="align-right">
+        {% if request.user|has_group_in:"simde" %}
+        <a href="#" class="btn waves-effect waves-light amber edit-item"><span>Éditer</span><i class="material-icons right">edit</i></a>
+        <script class="hidden-form" type="text/html">
+          <input type="hidden" name="edit-id" value="{{ key.id }}">
+
+          {% csrf_token %}
+          {% autoescape off %}
+            {{ key.form }}
+          {% endautoescape %}
+
+          <button class="btn waves-effect waves-light amber right" type="submit">Mettre à jour
+            <i class="material-icons right">edit</i>
+          </button>
+        </script>
+        <a href="{% url 'ginger:delete_key' key.id %}" class="btn waves-effect waves-light amber confirm"><span>Supprimer</span><i class="material-icons right">delete</i></a>
+        {% endif %}
+        <a href="{% url 'ginger:renew_key' key.id %}" class="btn waves-effect waves-light amber"><span>Regénérer</span><i class="material-icons right">autorenew</i></a>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+
+{% if request.user|has_group_in:"simde" %} 
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large amber btn-new">
+    <i class="large material-icons">add</i>
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+
+{% block form-title %}Clé Ginger{% endblock %}
+
+{% block form %}
+{% if request.user|has_group_in:"simde" %} 
+
+<form class="col s12" action="{% url 'ginger:api' %}" id="std-form" method="post">
+
+  <input type="hidden" name="edit-id" value="">
+
+  {% csrf_token %}
+  {% autoescape off %}
+    {{ form.as_materialize }}
+  {% endautoescape %}
+
+  <button class="btn waves-effect waves-light amber right" type="submit">Ajouter
+    <i class="material-icons right">send</i>
+  </button>
+</form>
+{% endif %}
+{% endblock %}

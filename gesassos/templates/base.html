@@ -1,0 +1,120 @@
+{% load static %}
+{% load groups %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'partials/head.html' %}
+</head>
+<body>
+
+<header>
+  <nav class="top-nav amber">
+    <div class="container">
+      <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="material-icons">menu</i></a>
+      <div class="nav-wrapper">
+        <a class="page-title">Gesassos | {{ app_name|capfirst }}</a>
+        <div class="right">
+          {% if messages %}
+          <a href="#" id="toggleMessages" class="waves-effect waves-teal"><i class="material-icons">sms</i></a>
+          {% endif %}
+          {% if user.is_authenticated %}
+          <a href="{% url 'authentication:info' %}" class="waves-effect waves-teal"><i class="material-icons">face</i>{{ user.first_name|capfirst }} {{ user.last_name|capfirst }}</a>
+          <a href="{% url 'authentication:logout' %}" class="waves-effect waves-teal"><i class="material-icons">cancel</i></a>
+          {% else %}
+          <a href="{% url 'authentication:login' %}" class="waves-effect waves-teal">Se connecter</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+  <ul id="nav-mobile" class="side-nav fixed">
+    <li class="logo">
+      <a id="logo-container" href="{% url 'index' %}" class="brand-logo">
+        <img id="front-page-logo" src="{% static "images/logo.png" %}" alt="SiMDE"/>
+      </a>
+    </li>
+
+    <li class="bold{% if app_name == "home" %} active{% endif %}">
+      <a href="{% url 'index' %}" class="waves-effect waves-teal{% if app_name == "home" %} active{% endif %}">
+        Accueil
+      </a>
+    </li>
+    {% if request.user|has_group_in:"bde,simde,bureau,geek" %} 
+    <li class="no-padding">
+      <ul class="collapsible collapsible-accordion">
+        <li class="bold{% if app_name == "ginger" %} active{% endif %}">
+          <a class="collapsible-header waves-effect waves-teal{% if app_name == "ginger" %} active{% endif %}">Ginger</a>
+          <div class="collapsible-body">
+            <ul>
+              {% if request.user|has_group_in:"bde,simde" %} 
+              <li class="{% if view_name == "contributors" %} active{% endif %}"><a href="{% url 'ginger:contributors' %}">Cotisants</a></li>
+              {% endif %}
+              <li class="{% if view_name == "api" %} active{% endif %}"><a href="{% url 'ginger:api' %}">Clés d'API</a></li>
+            </ul>
+          </div>
+        </li>
+        <li class="bold{% if app_name == "gesmail" %} active{% endif %}">
+          <a href="{% url 'gesmail:index' %}" class="waves-effect waves-teal{% if app_name == "gesmail" %} active{% endif %}">
+            Adresses mail
+          </a> 
+        </li>
+        <li class="bold{% if app_name == "gesassos" %} active{% endif %}">
+          <a href="gesasso.html" class="waves-effect waves-teal{% if app_name == "gesassos" %} active{% endif %}">
+            Assos
+          </a>
+        </li>
+        <!-- <li class="bold"><a class="waves-effect waves-teal">Portail</a></li> -->
+      </ul>
+    </li>
+    {% endif %}
+  </ul>
+</header>
+
+<main>
+  <div class="container">
+    <div class="row">
+      <div class="col s12">
+          <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+              {% block content %}
+              {% endblock %}
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="new-form{% if show_form %} visible{% endif %}">
+  <div class="container">
+    <div class="row">
+      <div class="col s6 onlycol">
+        <div class="new-form-container">
+          <div class="row">
+            <h5 class="header col s12 light">{% block form-title %}{% endblock %}<br/></h5>
+            {% block form %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="{% static "gesassos/js/materialize.js" %}"></script>
+<script src="{% static "gesassos/js/init.js" %}"></script>
+
+</body>
+</html>

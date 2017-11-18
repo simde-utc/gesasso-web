@@ -1,0 +1,4 @@
+
+*.pyc
+
+gesassos/settings\.py

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block page_name %}Gesmail{% endblock %}
+
+{% block content %}
+
+<h2 class="header amber-text text-darken-1">Gesmail</h1>
+<div class="row">
+  <h5 class="header col s12 light">Gestion des boites mail</h5>
+</div>
+<div class="row">
+<form action="#">
+  <div class="input-field">
+    <div class="row">
+      <div class="col s9">
+        <input type="text" id="autocomplete-input" class="autocomplete">
+        <label for="autocomplete-input">Rechercher une adresse mail</label>
+      </div>
+      <div class="btn waves-effect waves-light amber right">
+        <span>Rechercher</span>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+<ul class="collection">
+  <li class="collection-item avatar">
+    <i class="material-icons circle grey lighten-1">face</i>
+    <span class="title">SiMDE - Principale</span>
+    <p class="grey-text text-lighten-1">simde@assos.utc.fr</p>
+    <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
+  </li>
+  <li class="collection-item avatar">
+    <i class="material-icons circle grey lighten-1">face</i>
+    <span class="title">SiMDE - Woolly</span>
+    <p class="grey-text text-lighten-1">simde-woolly@assos.utc.fr</p>
+    <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
+  </li>
+</ul>
+
+{% endblock %}

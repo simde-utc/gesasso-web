@@ -10,6 +10,7 @@ Gestion des comptes assos pour le SiMDE et les bureaux d'assos
 * Installer mysqlclient `sudo pip install mysqlclient` (et `sudo apt-get install python-dev python3-dev` si besoin)
 * `sudo pip install django-cas-client==1.3.0`
 * Gestion des fuseaux horaires : `sudo pip install pytz tzlocal`
+* Ajouter une clé d'API Ginger à `gesassos/settings.py`
 * Lancer le serveur local
 ```
 cd gesassos-web

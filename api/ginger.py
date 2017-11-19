@@ -4,12 +4,19 @@ from django.conf import settings
 import requests
 from requestCommons import RequestResult
 
-def _urlJoin(*argv):
+def _urlJoin(*argv, **kwargs):
+	# Build url
 	strArgv = []
 	for arg in argv:
 		strArgv.append(str(arg))
 	fullUrl = settings.GINGER_SERVER_URL_V2 + "/".join(strArgv)
-	print(fullUrl)
+
+	# Optionnal parameters for GET request
+	if kwargs["getParams"]:
+		fullUrl += "?"
+		for getKey in kwargs["getParams"].keys():
+			fullUrl += getKey + "=" + kwargs["getParams"][getKey]
+
 	return fullUrl
 
 def _makeHeaders():
@@ -51,7 +58,7 @@ def _makeRequest(method, url, httpSuccessCode, jsonData = {}):
 	return result
 
 def getKeys(assosLogin = []):
-	result = _makeRequest(requests.get, _urlJoin("keys"), 200)
+	result = _makeRequest(requests.get, _urlJoin("keys"), requests.codes.ok)
 	if result.success:
 		if assosLogin:
 			result.content = [key for key in result.content if key["login"] in assosLogin]
@@ -59,16 +66,16 @@ def getKeys(assosLogin = []):
 	return result
 
 def addKey(d):
-	return _makeRequest(requests.post, _urlJoin("keys"), 201, jsonData=d)
+	return _makeRequest(requests.post, _urlJoin("keys"), requests.codes.created, jsonData=d)
 
 def editKey(key, d):
-	return _makeRequest(requests.patch, _urlJoin("keys", key), 204, jsonData=d)
+	return _makeRequest(requests.patch, _urlJoin("keys", key), requests.codes.no_content, jsonData=d)
 
 def deleteKey(key):
-	return _makeRequest(requests.delete, _urlJoin("keys", key), 200)
+	return _makeRequest(requests.delete, _urlJoin("keys", key), requests.codes.ok)
 
 def renewKey(key):
-	return _makeRequest(requests.post, _urlJoin("keys", key), 200)
+	return _makeRequest(requests.post, _urlJoin("keys", key), requests.codes.ok)
 
 def searchUsers(search):
-	return _makeRequest(requests.get, _urlJoin("users", "search", "?q="+search), requests.codes.ok) # TODO: make requests.codes.ok for all
+	return _makeRequest(requests.get, _urlJoin("users", "search", getParams = { "q": search }), requests.codes.ok)

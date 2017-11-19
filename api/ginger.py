@@ -12,11 +12,11 @@ def _urlJoin(*argv, **kwargs):
 	fullUrl = settings.GINGER_SERVER_URL_V2 + "/".join(strArgv)
 
 	# Optionnal parameters for GET request
-	if kwargs["getParams"]:
+	if "getParams" in kwargs:
 		fullUrl += "?"
 		for getKey in kwargs["getParams"].keys():
 			fullUrl += getKey + "=" + kwargs["getParams"][getKey]
-
+	print(fullUrl)
 	return fullUrl
 
 def _makeHeaders():

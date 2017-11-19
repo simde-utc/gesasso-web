@@ -8,7 +8,9 @@ def _urlJoin(*argv):
 	strArgv = []
 	for arg in argv:
 		strArgv.append(str(arg))
-	return settings.GINGER_SERVER_URL_V2 + "/".join(strArgv)
+	fullUrl = settings.GINGER_SERVER_URL_V2 + "/".join(strArgv)
+	print(fullUrl)
+	return fullUrl
 
 def _makeHeaders():
 	return {
@@ -29,7 +31,14 @@ def _makeRequest(method, url, httpSuccessCode, jsonData = {}):
 				pass
 			result = RequestResult(True, content=content, raw = r)
 		else:
-			error = r.json()
+			try:
+				error = r.json()
+			except ValueError as e:
+				error = {
+					"name": "Erreur lors de la lecture de l'erreur",
+					"message": unicode(r)
+				}
+			
 			if "message" in error:
 				errorMessage = error["message"]
 			elif "errors" in error and len(error)>0:
@@ -60,3 +69,6 @@ def deleteKey(key):
 
 def renewKey(key):
 	return _makeRequest(requests.post, _urlJoin("keys", key), 200)
+
+def searchUsers(search):
+	return _makeRequest(requests.get, _urlJoin("users", "search", "?q="+search), requests.codes.ok) # TODO: make requests.codes.ok for all

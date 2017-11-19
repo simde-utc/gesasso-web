@@ -18,19 +18,35 @@ from .forms import GingerKeyForm
 
 @login_required
 def contributors(request):
-    template = loader.get_template('ginger/index.html')
+    contributors = []
+    search = ""
     
+    # If a search has been made
+    if request.method == "GET" and "s" in request.GET and len(request.GET["s"]) > 0:
+        getSearch = request.GET["s"]
+
+        response = ginger.searchUsers(getSearch)
+        if response.success:
+            contributors = response.content
+        else:
+            messages.error(request, 'Erreur lors de la recherche: %s (%s)'%(response.errorMessage, response.errorName))
+
+        search = getSearch
+
     context = {
         'app_name': "ginger",
         'view_name' : "contributors",
+        'contributors' : contributors,
+        'search': search,
         'all': "all",
     }
-    return HttpResponse(template.render(context, request))
+
+    return render(request, 'ginger/contributors.html', context)
 
 @login_required
 def api(request):
     showForm = False
-    showUnfilter = False
+    search = False
 
     # TODO: get real asso names
     assos = list(set([(role.asso, role.asso) for role in models.UserRole.objects.all()]))
@@ -41,7 +57,7 @@ def api(request):
         userAssos = [] #nofilter
     # assos = [("etuville", "Étuville"), ("simde", "SiMDE"), ("bde", "BDE")]
 
-    # TODO: test if user has right to add a key
+    # Test if user has right to add a key
     if userUtils.has_group(request.user, "simde") and request.method == 'POST':
         form = GingerKeyForm(tuple(assos), request.POST)
 
@@ -83,9 +99,9 @@ def api(request):
 
         # If a search has been made
         if request.method == "GET" and "s" in request.GET:
-            search = request.GET["s"]
-            keys = [key for key in keys if search in key["login"]+key["key"]+key["description"]]
-            showUnfilter = search
+            getSearch = request.GET["s"]
+            keys = [key for key in keys if getSearch in key["login"]+key["key"]+key["description"]]
+            search = getSearch
 
         # Generate key edit form
         for i in range(0, len(keys)):
@@ -103,7 +119,7 @@ def api(request):
         'app_name': "ginger",
         'view_name' : "api",
         'autocomplete': assosAutocomplete,
-        'show_unfilter': showUnfilter,
+        'search': search,
         'keys': keys,
         'form': form,
         'show_form': showForm

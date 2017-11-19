@@ -20,13 +20,13 @@
             {{ autocomplete }}
           {% endautoescape %}
         </script>
-        <input type="text" id="autocomplete-input" name="s" class="autocomplete" {% if show_unfilter %}value="{{show_unfilter}}"{% endif %}>
+        <input type="text" id="autocomplete-input" name="s" class="autocomplete" {% if search %}value="{{search}}"{% endif %}>
         <label for="autocomplete-input">Rechercher une clé par nom ou par description</label>
       </div>
       <button class="btn waves-effect waves-light amber right" type="submit">Rechercher
         <i class="material-icons right">search</i>
       </button>
-      {% if show_unfilter %}
+      {% if search %}
       <a href="{% url 'ginger:api' %}" class="btn waves-effect waves-light amber right"><span>Enlever le filtre</span><i class="material-icons right">close</i></a>
       {% endif %}
     </div>

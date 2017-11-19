@@ -31,7 +31,7 @@
         <i class="material-icons circle grey lighten-1">face</i>
         <span class="title">{{ contributor.firstname }} {{ contributor.lastname }}</span>
         <p class="grey-text text-lighten-1">{{ contributor.login }}<br/>
-          {{ contributor.type }} • {{ contributor.badge }} • {{ contributor.email }} • {% if contributor.isAdult %}majeur{% else %}mineur{% endif %}
+          {% if contributor.isContributor %}cotisant{% else %}non cotisant{% endif %} • {{ contributor.badge }} • {{ contributor.email }} • {% if contributor.isAdult %}majeur{% else %}mineur{% endif %} • {{ contributor.type }}
         </p>
         <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
       </li>
@@ -43,39 +43,5 @@
   <p>Vous pouvez rechercher un étudiant par son nom, prénom, adresse mail, login ou identifiant de badge.</p>
   {% endif %}
 </div>
-<!-- <ul class="collection">
-  <li class="collection-item avatar">
-    <i class="material-icons circle grey lighten-1">face</i>
-    <span class="title">Samy Nastuzzi</span>
-    <p class="grey-text text-lighten-1">snastuzz<br/>
-    Cotisant jusqu'au 31/08/2018 - mineur
-    </p>
-    <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
-  </li>
-  <li class="collection-item avatar">
-    <i class="material-icons circle grey lighten-1">face</i>
-    <span class="title">Paul Jenny</span>
-    <p class="grey-text text-lighten-1">jennypau<br/>
-    Cotisant jusqu'au 31/08/2018
-    </p>
-    <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
-  </li>
-  <li class="collection-item avatar">
-    <i class="material-icons circle grey lighten-1">face</i>
-    <span class="title">César Richard</span>
-    <p class="grey-text text-lighten-1">licorne<br/>
-    Cotisant jusqu'au 31/08/2918
-    </p>
-    <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
-  </li>
-  <li class="collection-item avatar">
-    <i class="material-icons circle grey lighten-1">face</i>
-    <span class="title">Mewen Michel</span>
-    <p class="grey-text text-lighten-1">michelme<br/>
-    Cotisant jusqu'au 31/08/2018
-    </p>
-    <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
-  </li>
-</ul> -->
 
 {% endblock %}

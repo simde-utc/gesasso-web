@@ -148,9 +148,6 @@ CAS_SERVER_URL = "https://cas.utc.fr/cas/"
 CAS_AUTO_CREATE_USERS = True
 CAS_LOGOUT_COMPLETELY = not DEBUG
 CAS_PROVIDE_URL_TO_LOGOUT = True
-CAS_RESPONSE_CALLBACKS = (
-    'gesassos.test.callbackfunction', # TODO: remove this
-)
 
 # Ginger config
 GINGER_KEY_V1 = ''

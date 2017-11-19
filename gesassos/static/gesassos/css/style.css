@@ -107,6 +107,7 @@ li.collection-item.expandable {
 	width: 100%;
 	left: 0%;
 	margin: 0em;
+	border-color: #e0e0e0;
 }
 
 li.collection-item.expanded {

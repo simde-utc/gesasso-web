@@ -15,13 +15,13 @@
         <a class="page-title">Gesassos | {{ app_name|capfirst }}</a>
         <div class="right">
           {% if messages %}
-          <a href="#" id="toggleMessages" class="waves-effect waves-teal"><i class="material-icons">sms</i></a>
+          <a href="#" id="toggleMessages" class="waves-effect waves-light"><i class="material-icons">sms</i></a>
           {% endif %}
           {% if user.is_authenticated %}
-          <a href="{% url 'authentication:info' %}" class="waves-effect waves-teal"><i class="material-icons">face</i>{{ user.first_name|capfirst }} {{ user.last_name|capfirst }}</a>
-          <a href="{% url 'authentication:logout' %}" class="waves-effect waves-teal"><i class="material-icons">cancel</i></a>
+          <a href="{% url 'authentication:info' %}" class="waves-effect"><i class="material-icons">face</i>{{ user.first_name|capfirst }} {{ user.last_name|capfirst }}</a>
+          <a href="{% url 'authentication:logout' %}" class="waves-effect waves-light"><i class="material-icons">cancel</i></a>
           {% else %}
-          <a href="{% url 'authentication:login' %}" class="waves-effect waves-teal">Se connecter</a>
+          <a href="{% url 'authentication:login' %}" class="waves-effect waves-light">Se connecter</a>
           {% endif %}
         </div>
       </div>
@@ -35,7 +35,7 @@
     </li>
 
     <li class="bold{% if app_name == "home" %} active{% endif %}">
-      <a href="{% url 'index' %}" class="waves-effect waves-teal{% if app_name == "home" %} active{% endif %}">
+      <a href="{% url 'index' %}" class="waves-effect waves-light{% if app_name == "home" %} active{% endif %}">
         Accueil
       </a>
     </li>
@@ -43,7 +43,7 @@
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
         <li class="bold{% if app_name == "ginger" %} active{% endif %}">
-          <a class="collapsible-header waves-effect waves-teal{% if app_name == "ginger" %} active{% endif %}">Ginger</a>
+          <a class="collapsible-header waves-effect waves-light{% if app_name == "ginger" %} active{% endif %}">Ginger</a>
           <div class="collapsible-body">
             <ul>
               {% if request.user|has_group_in:"bde,simde" %} 
@@ -54,16 +54,16 @@
           </div>
         </li>
         <li class="bold{% if app_name == "gesmail" %} active{% endif %}">
-          <a href="{% url 'gesmail:index' %}" class="waves-effect waves-teal{% if app_name == "gesmail" %} active{% endif %}">
+          <a href="{% url 'gesmail:index' %}" class="waves-effect waves-light{% if app_name == "gesmail" %} active{% endif %}">
             Adresses mail
           </a> 
         </li>
         <li class="bold{% if app_name == "gesassos" %} active{% endif %}">
-          <a href="gesasso.html" class="waves-effect waves-teal{% if app_name == "gesassos" %} active{% endif %}">
+          <a href="gesasso.html" class="waves-effect waves-light{% if app_name == "gesassos" %} active{% endif %}">
             Assos
           </a>
         </li>
-        <!-- <li class="bold"><a class="waves-effect waves-teal">Portail</a></li> -->
+        <!-- <li class="bold"><a class="waves-effect waves-light">Portail</a></li> -->
       </ul>
     </li>
     {% endif %}

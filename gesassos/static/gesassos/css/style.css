@@ -35,6 +35,9 @@ main {
 	flex: 1 0 auto;
 }
 
+.btn, .btn-large, .btn-flat {
+    margin-top: 0.5em;
+}
 
 
 /* Menu */
@@ -157,22 +160,23 @@ li.collection-item.expandable > div {
 	margin: auto;
 }
 
+.new-form-container {
+	margin: auto;
+	padding: 1em 4em;
+	max-height: 96%;
+	position: relative;
+	background: #fff;
+	box-shadow: 0px 5px 5px rgba(0,0,0,0.5);
+	border-radius: 0.3em;
+	overflow: hidden;
+}
 
-@media screen and (min-width: 961px) {
+@media only screen and (max-width: 992px) {
 	.new-form-container {
-		margin: auto;
-		padding: 1em 4em;
-		max-height: 96%;
-		position: relative;
-		background: #fff;
-		box-shadow: 0px 5px 5px rgba(0,0,0,0.5);
-		border-radius: 0.3em;
-		overflow: hidden;
+		padding: 1em 2em;
 	}
 }
 
-
-/* TODO: make this for mobile */
 .messages {
 	position: absolute;
 	float: right;

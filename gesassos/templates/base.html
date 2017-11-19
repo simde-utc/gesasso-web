@@ -12,7 +12,7 @@
     <div class="container">
       <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="material-icons">menu</i></a>
       <div class="nav-wrapper">
-        <a class="page-title">Gesassos | {{ app_name|capfirst }}</a>
+        <a class="page-title">{{ app_name|capfirst }}</a>
         <div class="right">
           {% if messages %}
           <a href="#" id="toggleMessages" class="waves-effect waves-light"><i class="material-icons">sms</i></a>
@@ -88,7 +88,7 @@
 <div class="new-form{% if show_form %} visible{% endif %}">
   <div class="container">
     <div class="row">
-      <div class="col s6 onlycol">
+      <div class="col s11 m9 l6 onlycol">
         <div class="new-form-container">
           <div class="row">
             <h5 class="header col s12 light">{% block form-title %}{% endblock %}<br/></h5>

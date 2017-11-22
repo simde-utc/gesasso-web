@@ -7,8 +7,8 @@ from tzlocal import get_localzone # $ pip install tzlocal
 
 register = template.Library()
 
-@register.filter(name='ginger_date_to_human') 
-def ginger_date_to_human(date_str):
+@register.filter(name='ginger_date_time_to_human_le') 
+def ginger_date_time_to_human_le(date_str):
     date = datetime.strptime(date_str[0:-5],"%Y-%m-%dT%H:%M:%S")
     # Add UTC time zone
     date = datetime(date.year, date.month, date.day, date.hour, date.minute, date.second, date.microsecond, tzinfo=pytz.utc)
@@ -17,4 +17,20 @@ def ginger_date_to_human(date_str):
         ret = "aujourd'hui à " + localDate.strftime("%H:%M:%S")
     else:
         ret = "le " + localDate.strftime("%d/%m/%Y à %H:%M:%S")
+    return ret
+
+@register.filter(name='ginger_date_to_human_le') 
+def ginger_date_to_human_le(date):
+    if date == datetime.today().date():
+        ret = "aujourd'hui"
+    else:
+        ret = "le " + date.strftime("%d/%m/%Y")
+    return ret
+
+@register.filter(name='ginger_date_to_human') 
+def ginger_date_to_human(date):
+    if date == datetime.today().date():
+        ret = "aujourd'hui"
+    else:
+        ret = date.strftime("%d/%m/%Y")
     return ret

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import json
+from datetime import datetime
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, Http404
@@ -147,3 +148,60 @@ def renew_key(request, key):
         messages.error(request, 'Regénération refusée par Ginger : %s (%s)'%(response.errorMessage, response.errorName))
 
     return HttpResponseRedirect(reverse('ginger:api'))
+
+@login_required
+def info(request):
+    context = {
+        'app_name': "ginger",
+        'view_name' : "infos",
+        'user_info': request.user,
+    }
+    return render(request, 'ginger/info.html', context)
+
+@login_required
+def info(request, login = None):
+    if not login:
+        login = request.user.login
+
+    response = ginger.getUser(login)
+    user_info = None
+    if response.success:
+        user_info = response.content
+
+        # Rename inconsistant keys
+        user_info["is_contributor"] = user_info["isContributor"]
+        user_info["first_name"] = user_info["firstname"]
+        user_info["last_name"] = user_info["lastname"]
+        user_info["user_infotype"] = {
+            "name": user_info["type"]
+        }
+        user_info["is_active"] = request.user.is_active if login == request.user.login else None
+        user_info["is_admin"] = request.user.is_admin if login == request.user.login else None
+        user_info["is_adult"] = user_info["isAdult"]
+        user_info["badge"] = user_info["badge"]
+        user_info["updated_at"] = user_info["updatedAt"]
+        user_info["groups"] = request.user.groups if login == request.user.login else None
+        user_info["roles"] = request.user.roles if login == request.user.login else None
+
+        # Get contributions
+        response = ginger.getUserContributions(login)
+        if response.success:
+            user_info["contributions"] = response.content
+            currentDate = datetime.today().date()
+            user_info["contributions"][0]["begin"] = contributionBegin = datetime.strptime(user_info["contributions"][0]["begin"],"%Y-%m-%d").date()
+            user_info["contributions"][0]["end"] = contributionEnd = datetime.strptime(user_info["contributions"][0]["end"],"%Y-%m-%d").date()
+            if contributionBegin < currentDate and currentDate < contributionEnd:
+                user_info["contributions"][0]["current"] = True
+        else:
+            if not response.errorName == "ContributionNotFoundError":
+                messages.error(request, 'La recherche de contribution sur Ginger a échoué : %s (%s)'%(response.errorMessage, response.errorName))
+            user_info["contributions"] = None
+    else:
+        messages.error(request, 'La recherche sur Ginger a échoué : %s (%s)'%(response.errorMessage, response.errorName))
+
+    context = {
+        'app_name': "ginger",
+        'view_name' : "infos",
+        'user_info': user_info,
+    }
+    return render(request, 'ginger/info.html', context)

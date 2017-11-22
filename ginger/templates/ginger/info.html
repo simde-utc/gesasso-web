@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% load gingertime %}
+{% load groups %}
+
+{% block page_name %}Infos utilisateur{% endblock %}
+
+{% block content %}
+
+<h2 class="header amber-text">Infos utilisateur</h2>
+<div class="row">
+  <h5 class="header col s12 light">Ces informations proviennent du portail des assos et de Ginger</h5>
+</div>
+
+{% if user_info.login  %}
+
+<div class="row">
+  <h4 class="header col s12">Détails</h4>
+  <ul>
+    <li>Login : {{ user_info.login }}</li>
+    <li>Prénom : {{ user_info.first_name|capfirst }}</li>
+    <li>Nom : {{ user_info.last_name|capfirst }}</li>
+    <li>Email : {{ user_info.email }}</li>
+    <li>Type d'utilisateur : {{ user_info.user_infotype.name }}</li>
+    <li>Adulte : {% if user_info.is_adult %}Oui{% else %}Non{% endif %}</li>
+    <li>Badge : {{ user_info.badge }}</li>
+    <li>Mise à jour {% if user_info.updated_at %}{{ user_info.updated_at|ginger_date_time_to_human_le }}{% endif %}</li>
+    {% if user_info.is_active is not None  %}
+      <li>Actif : {% if user_info.is_active %}Oui{% else %}Non{% endif %}</li>
+    {% endif  %}
+    <li>Cotisant : {% if user_info.is_contributor %}Oui{% else %}Non{% endif %}</li>
+    {% if user_info.is_admin is not None  %}
+        <li>Administrateur : {% if user_info.is_admin %}Oui{% else %}Non{% endif %}</li>
+    {% endif  %}
+  </ul>
+</div>
+
+
+{% if user_info.groups is not None  %}
+<div class="row">
+  <h4 class="header col s12">Groupes</h4>
+  {% if user_info.groups.all %}
+    {% for group in user_info.groups.all %}
+      <div class="chip">
+        {{ group }}
+      </div>
+    {% endfor %}
+  {% else %}
+    Tu n'est affecté à aucun groupe
+  {% endif %}
+</div>
+{% endif %}
+
+{% if user_info.roles is not None  %}
+<div class="row">
+  <h4 class="header col s12">Roles</h4>
+  {% if user_info.roles.all %}
+    {% for role in user_info.roles.all %}
+      <div class="chip">
+        {{ role.asso }} : {{ role.get_role_display }}
+      </div>
+    {% endfor %}
+  {% else %}
+    Tu n'as visiblement aucun rôle dans une asso !
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="row">
+  <div class="row">
+    <h4 class="header col s12">Cotisations</h4>
+  </div>
+  {% if user_info.contributions %}
+    <ul class="collection">
+      {% for contribution in user_info.contributions %}
+        <li class="collection-item avatar">
+          <i class="material-icons circle {% if contribution.current %}green{% else %}grey{% endif %} lighten-1">ev_station</i>
+          <span class="title">du {{ contribution.begin|ginger_date_to_human }} au {{ contribution.end|ginger_date_to_human }}</span>
+          <p class="grey-text text-lighten-1">{{ contribution.amount }}€ • Id: {{ contribution.id }}
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    Tu n'as visiblement jamais cotisé au BDE, c'est mal ! Clique <a href="/bde/bdecotiz/" target="_blank">ici</a>
+  {% endif %}
+</div>
+
+{% else %}
+<div class="row">
+  <p>Ginger ne connaît pas ce login, on met la NSA sur le coup...</p>
+</div>
+
+{% endif %} <!-- end user_info.login -->
+
+{% endblock %}

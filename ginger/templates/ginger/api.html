@@ -44,7 +44,7 @@
       <a href="#!" class="secondary-content"><i class="material-icons amber-text">more_vert</i></a>
       <div>
         <p>Id: {{ key.id }}</p>
-        <p>Création {{ key.createdAt|ginger_date_to_human }}{% if key.updatedAt != key.createdAt %}, mis à jour {{ key.updatedAt|ginger_date_to_human }}{% endif %}</p>
+        <p>Création {{ key.createdAt|ginger_date_time_to_human_le }}{% if key.updatedAt != key.createdAt %}, mis à jour {{ key.updatedAt|ginger_date_time_to_human_le }}{% endif %}</p>
         {% if key.permissions %}
         <p>Permissions:</p>
         {% for permission in key.permissions %}

@@ -79,3 +79,12 @@ def renewKey(key):
 
 def searchUsers(search):
 	return _makeRequest(requests.get, _urlJoin("users", "search", getParams = { "q": search }), requests.codes.ok)
+
+def getUser(login):
+	return _makeRequest(requests.get, _urlJoin("users", login), requests.codes.ok)
+
+def getUserContributions(login):
+	return _makeRequest(requests.get, _urlJoin("users", login, "contributions"), requests.codes.ok)
+
+# def searchUserContribution(login):
+# 	return _makeRequest(requests.get, _urlJoin("users", login, "contributions", "last"), requests.codes.ok)

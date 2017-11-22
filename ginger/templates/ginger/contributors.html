@@ -31,9 +31,9 @@
         <i class="material-icons circle grey lighten-1">face</i>
         <span class="title">{{ contributor.firstname }} {{ contributor.lastname }}</span>
         <p class="grey-text text-lighten-1">{{ contributor.login }}<br/>
-          {% if contributor.isContributor %}cotisant{% else %}non cotisant{% endif %} • {{ contributor.badge }} • {{ contributor.email }} • {% if contributor.isAdult %}majeur{% else %}mineur{% endif %} • {{ contributor.type }}
+          {% if contributor.isContributor %}cotisant{% else %}non cotisant{% endif %} • {{ contributor.badge }} • <a href="mailto:{{ contributor.email }}">{{ contributor.email }}</a> • {% if contributor.isAdult %}majeur{% else %}mineur{% endif %} • {{ contributor.type }}
         </p>
-        <a href="#!" class="secondary-content"><i class="material-icons amber-text">edit</i></a>
+        <a href="{% url 'ginger:info' login=contributor.login %}" class="secondary-content"><i class="material-icons amber-text">more_horiz</i></a>
       </li>
     {% endfor %}
   </ul>

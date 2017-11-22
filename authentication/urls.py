@@ -8,5 +8,4 @@ app_name = 'authentication'
 urlpatterns = [
     url(r'^login/$', cas.views.login, name='login'),
     url(r'^logout/$', cas.views.logout, name='logout'),
-    url(r'^info/$', views.info, name='info'),
 ]
